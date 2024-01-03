@@ -1,15 +1,14 @@
+<template>
+  <LeafletMap />
+</template>
+
 <script>
+import LeafletMap from "./components/LeafletMap.vue";
+
 export default {
-  data() {
-    return {
-      test: "Erster Test",
-    };
-  },
+  name: "App",
+  components: { LeafletMap },
 };
 </script>
-
-<template>
-  <h1>{{ test }}</h1>
-</template>
 
 <style scoped></style>
