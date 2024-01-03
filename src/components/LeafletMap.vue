@@ -4,7 +4,7 @@
 
 <script>
 import "leaflet/dist/leaflet.css";
-import L from "leaflet";
+import L, { map } from "leaflet";
 
 export default {
   // The component's name:
@@ -23,6 +23,7 @@ export default {
       geojsonData: null,
       mapInstance: null,
       layerControlInstance: null,
+      currentMapBounds: null,
     };
   },
 
@@ -37,6 +38,21 @@ export default {
   },
 
   methods: {
+    handleMapMoved() {
+      const bounds = this.mapInstance.getBounds();
+      this.currentMapBoundaries = this.extractBoundsInfo(bounds);
+      // console.log(this.currentMapBoundaries); //activate to log map boundaries to the console
+    },
+
+    extractBoundsInfo(bounds) {
+      return {
+        A: { lat: bounds._northEast.lat, lng: bounds._southWest.lng },
+        B: { lat: bounds._northEast.lat, lng: bounds._northEast.lng },
+        C: { lat: bounds._southWest.lat, lng: bounds._northEast.lng },
+        D: { lat: bounds._southWest.lat, lng: bounds._southWest.lng },
+      };
+    },
+
     initMap() {
       const map = L.map(this.mapId, this.mapOptions);
       const tile = L.tileLayer(
@@ -52,6 +68,9 @@ export default {
           OpenStreetMap: tile,
         })
         .addTo(map);
+
+      // add eventListener for when the map is moved
+      map.addEventListener("moveend", this.handleMapMoved);
 
       setTimeout(() => {
         map.invalidateSize();
