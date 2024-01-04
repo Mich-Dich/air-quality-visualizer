@@ -23,10 +23,22 @@ export default {
       geojsonData: null,
       mapInstance: null,
       layerControlInstance: null,
-      currentMapBounds: null,
     };
   },
 
+  computed: {
+    currentMapBounds() {
+      const bounds = this.mapInstance.getBounds();
+      return {
+        A: { lat: bounds._northEast.lat, lng: bounds._southWest.lng },
+        B: { lat: bounds._northEast.lat, lng: bounds._northEast.lng },
+        C: { lat: bounds._southWest.lat, lng: bounds._northEast.lng },
+        D: { lat: bounds._southWest.lat, lng: bounds._southWest.lng },
+      };
+    },
+  },
+
+  //life cycle hooks
   mounted() {
     this.initMap();
   },
@@ -38,21 +50,6 @@ export default {
   },
 
   methods: {
-    handleMapMoved() {
-      const bounds = this.mapInstance.getBounds();
-      this.currentMapBoundaries = this.extractBoundsInfo(bounds);
-      // console.log(this.currentMapBoundaries); //activate to log map boundaries to the console
-    },
-
-    extractBoundsInfo(bounds) {
-      return {
-        A: { lat: bounds._northEast.lat, lng: bounds._southWest.lng },
-        B: { lat: bounds._northEast.lat, lng: bounds._northEast.lng },
-        C: { lat: bounds._southWest.lat, lng: bounds._northEast.lng },
-        D: { lat: bounds._southWest.lat, lng: bounds._southWest.lng },
-      };
-    },
-
     initMap() {
       const map = L.map(this.mapId, this.mapOptions);
       const tile = L.tileLayer(
@@ -69,8 +66,10 @@ export default {
         })
         .addTo(map);
 
-      // add eventListener for when the map is moved
-      map.addEventListener("moveend", this.handleMapMoved);
+      // activate for Debugging: Logs the boundaries of the visible map to the console
+      // map.addEventListener("moveend", () =>
+      //   console.table(this.currentMapBounds)
+      // );
 
       setTimeout(() => {
         map.invalidateSize();
