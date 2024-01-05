@@ -5,6 +5,7 @@
 <script>
 import "leaflet/dist/leaflet.css";
 import cities from "../assets/Städtedaten_2.json";
+import stations from "../assets/stations.json";
 import L, { map } from "leaflet";
 
 export default {
@@ -18,7 +19,7 @@ export default {
         center: L.latLng(47.6526, 9.4794),
         zoom: 10,
         zoomControl: true,
-        minZoom: 12,
+        // minZoom: 12,
         zoomAnimation: false,
         layers: [],
       },
@@ -45,11 +46,13 @@ export default {
     handleMapMoved() {
       this.getCurrentMapBounds();
 
-      this.getFilteredCities(this.filterOptions);
+      // this.getFilteredCities(this.filterOptions);
 
-      this.addMarkers(this.filteredCities);
+      // this.addMarkersToCities(this.filteredCities);
 
-      this.logInfo();
+      this.addMarkersToStations();
+
+      // this.logInfo();
     },
 
     logInfo() {
@@ -58,12 +61,20 @@ export default {
       console.table(this.filteredCities);
     },
 
-    addMarkers(citiesArray) {
-      //adds a marker with city name popup to every city in citiesArray
+    addMarkersToCities(citiesArray) {
       citiesArray.forEach(city => {
         const marker = L.marker([city.Breitengrad, city.Längengrad])
           .addTo(this.mapInstance)
           .bindPopup(city.Ort);
+      });
+    },
+
+    addMarkersToStations() {
+      Object.keys(stations).forEach(stationKey => {
+        let station = stations[stationKey];
+        const marker = L.marker([station[8], station[7]])
+          .addTo(this.mapInstance)
+          .bindPopup(station[2]);
       });
     },
 
