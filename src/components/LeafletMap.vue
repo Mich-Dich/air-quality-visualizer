@@ -29,6 +29,7 @@ export default {
       currentMapBounds: null,
       filteredCities: null,
       filterOptions: { onlyInView: true, onlyOneDistrictPerCity: true },
+      // stationsArray: null,
     };
   },
 
@@ -50,7 +51,9 @@ export default {
 
       // this.addMarkersToCities(this.filteredCities);
 
-      this.addMarkersToStations();
+      const stationsArray = Object.values(stations);
+
+      this.addMarkersToStations(stationsArray);
 
       // this.logInfo();
     },
@@ -61,6 +64,17 @@ export default {
       console.table(this.filteredCities);
     },
 
+    // filterStations() {
+    //   filteredCities = filteredCities.filter(city => {
+    //     return (
+    //       stations <= this.currentMapBounds.A.lat &&
+    //       city.Breitengrad >= this.currentMapBounds.D.lat &&
+    //       city.Längengrad <= this.currentMapBounds.B.lng &&
+    //       city.Längengrad >= this.currentMapBounds.A.lng
+    //     );
+    //   });
+    // },
+
     addMarkersToCities(citiesArray) {
       citiesArray.forEach(city => {
         const marker = L.marker([city.Breitengrad, city.Längengrad])
@@ -69,15 +83,48 @@ export default {
       });
     },
 
-    addMarkersToStations() {
-      Object.keys(stations).forEach(stationKey => {
-        let station = stations[stationKey];
-        const marker = L.marker([station[8], station[7]])
-          .addTo(this.mapInstance)
-          .bindPopup(station[2]);
+    addMarkersToStations(stationsArray) {
+      let presentMarkers = [];
+
+      const markersToAdd = this.getMarkersToAdd(stationsArray, presentMarkers);
+      markersToAdd.forEach(station => {
+        const marker = L.marker([station[8], station[7]]).addTo(
+          this.mapInstance
+        );
+        presentMarkers.push(station[0]);
       });
     },
 
+    getMarkersToAdd(stationsArray, presentMarkers) {
+      // this.checkIfMarkerAdded(stationsArray, presentMarkers);
+      const markersToAdd = stationsArray.filter(station => {
+        if (presentMarkers.includes(station[0])) {
+          if (
+            station[8] <= this.currentMapBounds.A.lat &&
+            station[8] >= this.currentMapBounds.D.lat &&
+            station[7] <= this.currentMapBounds.B.lng &&
+            station[7] >= this.currentMapBounds.A.lng
+          ) {
+            this.removeMarker(station, presentMarkers);
+          }
+          return false;
+        }
+        return (
+          station[8] <= this.currentMapBounds.A.lat &&
+          station[8] >= this.currentMapBounds.D.lat &&
+          station[7] <= this.currentMapBounds.B.lng &&
+          station[7] >= this.currentMapBounds.A.lng
+        );
+      });
+      return markersToAdd;
+    },
+
+    removeMarker(marker, presentMarkers) {
+      presentMarkers = presentMarkers.filter(
+        existingMarker => existingMarker !== marker
+      );
+      marker.remove();
+    },
     getCurrentMapBounds() {
       //calculate and set the four corner points of the viewable map
       const bounds = this.mapInstance.getBounds();
