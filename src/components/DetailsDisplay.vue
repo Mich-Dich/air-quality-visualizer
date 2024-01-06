@@ -1,13 +1,15 @@
 <template>
-  <div class="display-container slashed-corners">
+  <div class="display-container slashed-corners-display">
     <h1 class="display-title">{{ title }}</h1>
     <hr class="separator" />
-    <input
-      type="text"
-      class="search-input slashed-corners"
-      id="searchInput"
-      placeholder="Suche..."
-    />
+    <div class="slashed-corners-search">
+      <input
+        type="text"
+        class="search-input"
+        id="searchInput"
+        placeholder="Suche..."
+      />
+    </div>
   </div>
 </template>
 
@@ -27,16 +29,18 @@ export default {
 <style>
 :root {
   --width-display: 500px;
-  --aspect-ratio-display: 4;
-  --aspect-ratio: var(--aspect-ratio-display);
-  --corner-depth: 15;
   --padding-display: 20px;
   --searchbar-height: 40px;
-  --aspect-ratio-searchbar: calc(
-    calc((var(--width-display) - (var(--padding-display) * 2))) /
-      var(--searchbar-height)
-  );
+
+  /* for calculation slashed corners of display container */
+  --aspect-ratio-display: 4;
+  --corner-depth-display: 15;
+
+  /* for calculation slashed corners of searchbar */
+  --aspect-ratio-search: 12;
+  --corner-depth-search: 30;
 }
+
 .display-container {
   /* design */
   background-color: black;
@@ -65,19 +69,31 @@ export default {
   border-radius: 5px;
   width: 100%;
   height: var(--searchbar-height);
-  /* Override aspect ratio for search bar */
-  --aspect-ratio: var(--aspect-ratio-searchbar);
-  --corner-depth: 30;
 }
 
-.slashed-corners {
+.slashed-corners-display {
   clip-path: polygon(
-    calc((var(--corner-depth) / var(--aspect-ratio)) * 1%) 0,
+    calc((var(--corner-depth-display) / var(--aspect-ratio-display)) * 1%) 0,
     100% 0,
-    100% calc(100% - var(--corner-depth) * 1%),
-    calc(100% - (var(--corner-depth) / var(--aspect-ratio)) * 1%) 100%,
+    100% calc(100% - var(--corner-depth-display) * 1%),
+    calc(
+        100% - (var(--corner-depth-display) / var(--aspect-ratio-display)) * 1%
+      )
+      100%,
     0 100%,
-    0 calc(var(--corner-depth) * 1%)
+    0 calc(var(--corner-depth-display) * 1%)
+  );
+}
+
+.slashed-corners-search {
+  clip-path: polygon(
+    calc((var(--corner-depth-search) / var(--aspect-ratio-search)) * 1%) 0,
+    100% 0,
+    100% calc(100% - var(--corner-depth-search) * 1%),
+    calc(100% - (var(--corner-depth-search) / var(--aspect-ratio-search)) * 1%)
+      100%,
+    0 100%,
+    0 calc(var(--corner-depth-search) * 1%)
   );
 }
 </style>
