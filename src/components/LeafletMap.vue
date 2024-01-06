@@ -37,7 +37,9 @@ export default {
 
   mounted() {
     this.initMap();
-
+    this.stationsArray = Object.values(stations);
+    this.getCurrentMapBounds();
+    this.updateMarkers();
     UmweltbundesamtService.getNetworks("en", "2").then(response =>
       console.log(response)
     );
@@ -56,8 +58,6 @@ export default {
       // this.getFilteredCities(this.filterOptions);
 
       // this.addMarkersToCities(this.filteredCities);
-
-      this.stationsArray = Object.values(stations);
 
       this.updateMarkers();
 
