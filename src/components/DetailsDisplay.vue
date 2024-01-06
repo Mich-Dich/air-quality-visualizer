@@ -2,18 +2,17 @@
   <div class="display-container slashed-corners-display">
     <h1 class="display-title">{{ title }}</h1>
     <hr class="separator" />
-    <div class="slashed-corners-search">
-      <input
-        type="text"
-        class="search-input"
-        id="searchInput"
-        placeholder="Suche..."
-      />
-    </div>
+    <input
+      type="text"
+      class="search-input slashed-corners-search"
+      id="searchInput"
+      placeholder="Suche..."
+    />
   </div>
 </template>
 
 <script>
+import "../assets/main.css";
 export default {
   // The component's name:
   name: "DetailsDisplay",
@@ -43,7 +42,7 @@ export default {
 
 .display-container {
   /* design */
-  background-color: black;
+  background-color: rgb(31, 31, 31);
   color: white;
 
   /* layout */
@@ -63,12 +62,22 @@ export default {
 }
 
 .search-input {
+  color: white;
   padding: 10px;
   font-size: 16px;
-  border: 1px solid #ccc;
+  border: none;
   border-radius: 5px;
   width: 100%;
   height: var(--searchbar-height);
+  background-color: rgb(66, 66, 66);
+}
+
+.search-input::placeholder {
+  color: rgb(187, 187, 187);
+}
+
+.search-input:focus {
+  outline: none;
 }
 
 .slashed-corners-display {
