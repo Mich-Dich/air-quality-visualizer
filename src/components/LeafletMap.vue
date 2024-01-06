@@ -7,6 +7,7 @@ import "leaflet/dist/leaflet.css";
 import cities from "../assets/Städtedaten_2.json";
 import stations from "../assets/stations.json";
 import L, { map, marker } from "leaflet";
+import UmweltbundesamtService from "../services/UmweltbundesamtService";
 
 export default {
   // The component's name:
@@ -36,6 +37,10 @@ export default {
 
   mounted() {
     this.initMap();
+
+    UmweltbundesamtService.getNetworks("en", "2").then(response =>
+      console.log(response)
+    );
   },
 
   beforeUnmount() {
