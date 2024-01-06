@@ -6,7 +6,7 @@
 import "leaflet/dist/leaflet.css";
 import cities from "../assets/Städtedaten_2.json";
 import stations from "../assets/stations.json";
-import L, { map } from "leaflet";
+import L, { map, marker } from "leaflet";
 
 export default {
   // The component's name:
@@ -29,7 +29,8 @@ export default {
       currentMapBounds: null,
       filteredCities: null,
       filterOptions: { onlyInView: true, onlyOneDistrictPerCity: true },
-      // stationsArray: null,
+      stationsArray: [],
+      markerMap: new Map(),
     };
   },
 
@@ -51,29 +52,65 @@ export default {
 
       // this.addMarkersToCities(this.filteredCities);
 
-      const stationsArray = Object.values(stations);
+      this.stationsArray = Object.values(stations);
 
-      this.addMarkersToStations(stationsArray);
+      this.updateMarkers();
 
       // this.logInfo();
     },
 
-    logInfo() {
-      // select or add variables to log here
-      console.table(this.currentMapBounds);
-      console.table(this.filteredCities);
+    updateMarkers() {
+      // Durchläuft jedes Element im stationsArray.
+      this.stationsArray.forEach(station => {
+        // Konvertiert die Breiten- und Längengrade der Station in Fließkommazahlen.
+        const lat = parseFloat(station[8]);
+        const lng = parseFloat(station[7]);
+
+        // Überprüft, ob der Marker innerhalb der aktuellen Kartenbegrenzungen liegt.
+        const markerInBounds =
+          lat <= this.currentMapBounds.A.lat &&
+          lat >= this.currentMapBounds.D.lat &&
+          lng <= this.currentMapBounds.B.lng &&
+          lng >= this.currentMapBounds.A.lng;
+
+        // Versucht, einen vorhandenen Marker an den gegebenen Koordinaten in der markerMap zu finden.
+        const existingMarker = this.markerMap.get(`${lat},${lng}`);
+
+        // Wenn der Marker innerhalb der Begrenzungen liegt und noch nicht existiert, wird ein neuer Marker erstellt und zur markerMap hinzugefügt.
+        if (markerInBounds && !existingMarker) {
+          const newMarker = this.createMarker(station);
+          this.markerMap.set(`${lat},${lng}`, newMarker);
+        }
+        // Wenn der Marker außerhalb der Begrenzungen liegt und bereits existiert, wird er entfernt.
+        else if (!markerInBounds && existingMarker) {
+          this.removeMarker(existingMarker);
+        }
+      });
     },
 
-    // filterStations() {
-    //   filteredCities = filteredCities.filter(city => {
-    //     return (
-    //       stations <= this.currentMapBounds.A.lat &&
-    //       city.Breitengrad >= this.currentMapBounds.D.lat &&
-    //       city.Längengrad <= this.currentMapBounds.B.lng &&
-    //       city.Längengrad >= this.currentMapBounds.A.lng
-    //     );
-    //   });
-    // },
+    createMarker(station) {
+      const marker = L.marker([parseFloat(station[8]), parseFloat(station[7])])
+        .addTo(this.mapInstance)
+        .bindPopup(station[2]);
+      return marker;
+    },
+
+    logInfo() {
+      // Loggt die aktuellen Kartenbegrenzungen.
+      // console.table(this.currentMapBounds);
+      // Loggt die gefilterten Städte.
+      // console.table(this.filteredCities);
+      // Loggt die Kartenoptionen.
+      // console.table(this.mapOptions);
+      // Loggt die GeoJSON-Daten.
+      // console.table(this.geojsonData);
+      // Loggt die Stationsdaten.
+      // console.table(this.stationsArray.map(station => station[2]));
+      // Loggt die Filteroptionen.
+      // console.table(this.filterOptions);
+      // Loggt die MarkerMap.
+      // console.table(Array.from(this.markerMap.entries()));
+    },
 
     addMarkersToCities(citiesArray) {
       citiesArray.forEach(city => {
@@ -83,48 +120,15 @@ export default {
       });
     },
 
-    addMarkersToStations(stationsArray) {
-      let presentMarkers = [];
-
-      const markersToAdd = this.getMarkersToAdd(stationsArray, presentMarkers);
-      markersToAdd.forEach(station => {
-        const marker = L.marker([station[8], station[7]]).addTo(
-          this.mapInstance
-        );
-        presentMarkers.push(station[0]);
-      });
+    removeMarker(markerToRemove) {
+      if (markerToRemove) {
+        markerToRemove.remove();
+        const lat = markerToRemove.getLatLng().lat;
+        const lng = markerToRemove.getLatLng().lng;
+        this.markerMap.delete(`${lat},${lng}`);
+      }
     },
 
-    getMarkersToAdd(stationsArray, presentMarkers) {
-      // this.checkIfMarkerAdded(stationsArray, presentMarkers);
-      const markersToAdd = stationsArray.filter(station => {
-        if (presentMarkers.includes(station[0])) {
-          if (
-            station[8] <= this.currentMapBounds.A.lat &&
-            station[8] >= this.currentMapBounds.D.lat &&
-            station[7] <= this.currentMapBounds.B.lng &&
-            station[7] >= this.currentMapBounds.A.lng
-          ) {
-            this.removeMarker(station, presentMarkers);
-          }
-          return false;
-        }
-        return (
-          station[8] <= this.currentMapBounds.A.lat &&
-          station[8] >= this.currentMapBounds.D.lat &&
-          station[7] <= this.currentMapBounds.B.lng &&
-          station[7] >= this.currentMapBounds.A.lng
-        );
-      });
-      return markersToAdd;
-    },
-
-    removeMarker(marker, presentMarkers) {
-      presentMarkers = presentMarkers.filter(
-        existingMarker => existingMarker !== marker
-      );
-      marker.remove();
-    },
     getCurrentMapBounds() {
       //calculate and set the four corner points of the viewable map
       const bounds = this.mapInstance.getBounds();
