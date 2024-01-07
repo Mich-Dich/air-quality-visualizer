@@ -26,7 +26,6 @@ export default {
       },
       geojsonData: null,
       mapInstance: null,
-      layerControlInstance: null,
       currentMapBounds: null,
       filteredCities: null,
       filterOptions: { onlyInView: true, onlyOneDistrictPerCity: true },
@@ -190,13 +189,6 @@ export default {
             '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         }
       ).addTo(map);
-
-      //adds the overlay in the top right corner, might be removed later
-      this.layerControlInstance = L.control
-        .layers({
-          OpenStreetMap: tile,
-        })
-        .addTo(map);
 
       // add eventListener for when the map is moved
       map.addEventListener("moveend", this.handleMapMoved);
