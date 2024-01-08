@@ -2,9 +2,118 @@ import axios from "axios";
 
 class UmweltbundesamtService {
   constructor() {
+    // Create an axios instance called api that uses the proxy on localhost:3000 to avoid CORS issues
     this.api = axios.create({
       baseURL: "http://localhost:3000/proxy/api/air_data/v2",
     });
+
+    // Store meta data that will be used as parameters for the API calls
+    this.stations = null; // Messstationen
+    this.components = null; // Schadstofftypen
+    this.networks = null; // Bundesländer
+    this.scopes = null; // Zeitbezug des Messwerts z.B. Acht-Stunden-Mittelwert
+    this.stationSettings = null; // Geographische z.B. ländlich oder städtisch
+    this.stationsTypes = null; // Hintergrund, Industrie, Verkehr
+    this.transgressionTypes = null; // Überschreitungswerte z.B. "Tagesmittelwerte über 50 µg/m³"
+  }
+
+  // The fetchAndStore methods are used to fetch the data from the API and store it in the class instance
+  async fetchAndStoreStations(lang, index) {
+    const stations = await this.getStations(lang, index);
+    this.stations = stations.data;
+  }
+
+  async fetchAndStoreComponents(lang, code) {
+    const components = await this.getComponents(lang, code);
+    this.components = components.data;
+  }
+
+  async fetchAndStoreNetworks(lang, index) {
+    const networks = await this.getNetworks(lang, index);
+    this.networks = networks.data;
+  }
+
+  async fetchAndStoreScopes(lang, index) {
+    const scopes = await this.getScopes(lang, index);
+    this.scopes = scopes.data;
+  }
+
+  async fetchAndStoreStationSettings(lang, index) {
+    const stationSettings = await this.getStationSettings(lang, index);
+    this.stationSettings = stationSettings.data;
+  }
+
+  async fetchAndStoreStationsTypes(lang, index) {
+    const stationsTypes = await this.getStationsTypes(lang, index);
+    this.stationsTypes = stationsTypes.data;
+  }
+
+  async fetchAndStoreTransgressionTypes(lang, index) {
+    const transgressionTypes = await this.getTransgressionTypes(lang, index);
+    this.transgressionTypes = transgressionTypes.data;
+  }
+
+  // Is called once to get and store all parameters needed for regular API calls
+  async fetchAndStoreAllData(lang, index) {
+    await this.fetchAndStoreStations(lang, index);
+    await this.fetchAndStoreComponents(lang, index);
+    await this.fetchAndStoreNetworks(lang, index);
+    await this.fetchAndStoreScopes(lang, index);
+    await this.fetchAndStoreStationSettings(lang, index);
+    await this.fetchAndStoreStationsTypes(lang, index);
+    await this.fetchAndStoreTransgressionTypes(lang, index);
+  }
+
+  // This method is used to log all the data stored in the class instance for debugging purposes
+  logAllMembers() {
+    console.log("stations [MESSSTATIONEN]", this.stations);
+    console.log("components [SCHADSTOFFE]", this.components);
+    console.log("networks [BUNDESLÄNDER]", this.networks);
+    console.log(
+      "scopes [ZEITBEZUG DES MESSWERTS Z.B. Acht-Stunden-Mittelwert]",
+      this.scopes
+    );
+    console.log(
+      "stationSettings [GEOGRAPHISCHE Z.B. ländlich oder städtisch]",
+      this.stationSettings
+    );
+    console.log(
+      "stationsTypes [HINTERGRUND, INDUSTRIE, VERKEHR]",
+      this.stationsTypes
+    );
+    console.log(
+      "transgressionTypes [ÜBERSCHREITUNGSWERTE Z.B. 'Tagesmittelwerte über 50 µg/m³']",
+      this.transgressionTypes
+    );
+  }
+
+  // Thes methods are used to get the data from the API endpoints
+  getStations(lang, index) {
+    return this.api.get(`/stations/json?lang=${lang}&index=${index}`);
+  }
+
+  getComponents(lang, code) {
+    return this.api.get(`/components/json?lang=${lang}&index=${code}`);
+  }
+
+  getNetworks(lang, index) {
+    return this.api.get(`/networks/json?lang=${lang}&index=${index}`);
+  }
+
+  getScopes(lang, index) {
+    return this.api.get(`/scopes/json?lang=${lang}&index=${index}`);
+  }
+
+  getStationSettings(lang) {
+    return this.api.get(`/stationsettings/json?lang=${lang}`);
+  }
+
+  getStationsTypes(lang) {
+    return this.api.get(`/stationtypes/json?lang=${lang}`);
+  }
+
+  getTransgressionTypes(lang) {
+    return this.api.get(`/transgressiontypes/json?lang=${lang}`);
   }
 
   getMeta(use, lang, date_from, date_to, time_from, time_to) {
@@ -12,12 +121,6 @@ class UmweltbundesamtService {
       `/meta/json?use=${use}&lang=${lang}&date_from=${date_from}&date_to=${date_to}&time_from=${time_from}&time_to=${time_to}`
     );
   }
-
-  getNetworks(lang, index) {
-    return this.api.get(`/networks/json?lang=${lang}&index=${index}`);
-  }
-
-  // Add more methods for other API endpoints here
 }
 
 export default new UmweltbundesamtService();

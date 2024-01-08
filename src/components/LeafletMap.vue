@@ -34,14 +34,13 @@ export default {
     };
   },
 
-  mounted() {
+  async mounted() {
     this.initMap();
+    await UmweltbundesamtService.fetchAndStoreAllData("de", "code");
+    // UmweltbundesamtService.logAllMembers();
     this.stationsArray = Object.values(stations);
     this.getCurrentMapBounds();
     this.updateMarkers();
-    UmweltbundesamtService.getNetworks("en", "2").then(response =>
-      console.log(response)
-    );
   },
 
   beforeUnmount() {
