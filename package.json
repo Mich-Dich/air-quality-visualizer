@@ -10,14 +10,20 @@
     "startServer": "node backend/server.js"
   },
   "dependencies": {
+    "@mdi/font": "7.0.96",
+    "roboto-fontface": "*",
+    "vuetify": "^3.0.0",
     "axios": "^1.6.5",
     "express": "^4.18.2",
     "http-proxy-middleware": "^2.0.6",
     "leaflet": "^1.9.4",
-    "vue": "^3.3.11",
-    "vue-router": "^4.2.5"
+    "vue": "^3.3.11"
   },
   "devDependencies": {
+    "sass": "^1.69.0",
+    "unplugin-fonts": "^1.1.0",
+    "unplugin-vue-components": "^0.26.0",
+    "vite-plugin-vuetify": "^2.0.0",
     "@types/leaflet": "^1.9.8",
     "@vitejs/plugin-vue": "^4.5.2",
     "vite": "^5.0.10"

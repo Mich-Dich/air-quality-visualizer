@@ -12,7 +12,6 @@
 </template>
 
 <script>
-import "../assets/main.css";
 export default {
   // The component's name:
   name: "DetailsDisplay",

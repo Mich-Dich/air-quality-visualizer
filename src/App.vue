@@ -1,10 +1,12 @@
 <template>
-  <div class="map-container">
-    <LeafletMap />
-    <div class="overlay">
-      <DetailsDisplay />
-    </div>
-  </div>
+  <v-app>
+    <v-main>
+      <LeafletMap />
+      <div class="overlay">
+        <DetailsDisplay />
+      </div>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
@@ -13,16 +15,14 @@ import DetailsDisplay from "./components/DetailsDisplay.vue";
 
 export default {
   name: "App",
-  components: { LeafletMap, DetailsDisplay },
+  components: {
+    LeafletMap,
+    DetailsDisplay,
+  },
 };
 </script>
 
 <style scoped>
-.map-container {
-  position: relative;
-  height: 100vh; /* Adjust as needed */
-}
-
 .overlay {
   position: absolute;
   top: 0;
