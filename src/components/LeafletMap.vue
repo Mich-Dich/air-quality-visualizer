@@ -5,7 +5,6 @@
 <script>
 import "leaflet/dist/leaflet.css";
 import cities from "../assets/Städtedaten_2.json";
-import stations from "../assets/stations.json";
 import L, { map, marker } from "leaflet";
 import UmweltbundesamtService from "../services/UmweltbundesamtService";
 
@@ -38,9 +37,10 @@ export default {
     this.initMap();
     await UmweltbundesamtService.fetchAndStoreAllData("de", "code");
     // UmweltbundesamtService.logAllMembers();
-    this.stationsArray = Object.values(stations);
+    this.stationsArray = Object.values(UmweltbundesamtService.stations.data);
     this.getCurrentMapBounds();
     this.updateMarkers();
+    // this.addAllMarkers();
   },
 
   beforeUnmount() {
@@ -52,14 +52,19 @@ export default {
   methods: {
     handleMapMoved() {
       this.getCurrentMapBounds();
-
-      // this.getFilteredCities(this.filterOptions);
-
-      // this.addMarkersToCities(this.filteredCities);
-
       this.updateMarkers();
-
       // this.logInfo();
+    },
+
+    addAllMarkers() {
+      this.stationsArray.forEach(station => {
+        const marker = L.marker([
+          parseFloat(station[8]),
+          parseFloat(station[7]),
+        ])
+          .addTo(this.mapInstance)
+          .bindPopup(station[2]);
+      });
     },
 
     updateMarkers() {
