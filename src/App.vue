@@ -1,13 +1,13 @@
 <template>
-  <v-app>
+  <v-app class="grey lighten-4">
     <Navbar />
-  </v-app>
-  <div class="map-container">
-    <LeafletMap />
-    <div class="overlay">
-      <DetailsDisplay />
+    <div class="map-container">
+      <LeafletMap />
+      <div class="overlay">
+        <DetailsDisplay />
+      </div>
     </div>
-  </div>
+  </v-app>
 </template>
 
 <script>

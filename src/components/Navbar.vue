@@ -1,6 +1,41 @@
+<style>
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a:focus {
+  color: inherit;
+}
+</style>
+
 <template>
   <nav>
-    <v-toolbar> </v-toolbar>
+    <v-toolbar app>
+      <v-toolbar-title class="text-uppercase">
+        <span class="font-weight-light"> Airquality </span>
+        <span class="font-weight-bold"> Visualizer </span>
+      </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn>
+        <span class="font-weight-bold">Mode</span>
+        <v-icon right>mdi mdi-dark mdi-invert-colors</v-icon>
+      </v-btn>
+      <v-btn>
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+          <span class="font-weight-bold">Github</span>
+          <v-icon right>mdi mdi-github</v-icon>
+        </a>
+      </v-btn>
+      <v-btn>
+        <span class="font-weight-bold">About</span>
+        <v-icon right>mdi mdi-information</v-icon>
+      </v-btn>
+      <v-btn>
+        <span class="font-weight-bold">Language</span>
+        <v-icon right>mdi mdi-translate-variant</v-icon>
+      </v-btn>
+    </v-toolbar>
   </nav>
 </template>
 
