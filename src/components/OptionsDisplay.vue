@@ -4,8 +4,39 @@
     :title="title"
     :subtitle="subtitle"
     width="500px"
+    height="800px"
     color="rgb(31, 31, 31)"
   >
+    <VueDatePicker
+      v-model="startDate"
+      placeholder="Start Date"
+      dark
+      class="mb-5"
+      position="right"
+      time-picker-inline
+      auto-apply
+      partial-flow
+      min-date="1 / 1 / 2016"
+      :max-date="new Date()"
+      prevent-min-max-navigation
+      locale="de"
+    ></VueDatePicker>
+
+    <VueDatePicker
+      v-model="endDate"
+      placeholder="End Date"
+      dark
+      class="mb-5"
+      position="right"
+      time-picker-inline
+      auto-apply
+      partial-flow
+      min-date="1 / 1 / 2016"
+      :max-date="new Date()"
+      prevent-min-max-navigation
+      locale="de"
+    ></VueDatePicker>
+
     <v-autocomplete
       v-model="selectedComponent"
       variant="outlined"
@@ -26,19 +57,24 @@
 
 <script>
 import UmweltbundesamtService from "../services/UmweltbundesamtService";
+import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
 
 export default {
   // The component's name:
   name: "OptionsDisplay",
 
+  components: {
+    VueDatePicker,
+  },
+
   async mounted() {
     await UmweltbundesamtService.fetchAndStoreAllData("de", "code");
-    UmweltbundesamtService.logAllMembers();
+    // UmweltbundesamtService.logAllMembers();
     this.componentNames = UmweltbundesamtService.components.map(
       component => component[4]
     );
     this.scopeNames = UmweltbundesamtService.scopes.map(scope => scope[5]);
-    console.log(this.scopeNames);
   },
 
   data() {
@@ -49,6 +85,8 @@ export default {
       componentNames: [],
       selectedScope: "",
       scopeNames: [],
+      startDate: null,
+      endDate: null,
     };
   },
 };
