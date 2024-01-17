@@ -37,7 +37,9 @@ class UmweltbundesamtService {
 
   async fetchAndStoreScopes(lang, index) {
     const scopes = await this.getScopes(lang, index);
-    this.scopes = scopes.data;
+    this.scopes = Object.values(scopes.data)
+      .filter(Array.isArray)
+      .filter((item, index) => index !== 0);
   }
 
   async fetchAndStoreStationSettings(lang, index) {

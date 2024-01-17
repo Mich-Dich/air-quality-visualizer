@@ -5,12 +5,21 @@
     :subtitle="subtitle"
     width="500px"
     color="rgb(31, 31, 31)"
-    ><v-autocomplete
+  >
+    <v-autocomplete
       v-model="selectedComponent"
       variant="outlined"
       clearable
       label="Schadstoff"
       :items="componentNames"
+    ></v-autocomplete>
+
+    <v-autocomplete
+      v-model="selectedScope"
+      variant="outlined"
+      clearable
+      label="Zeitbezug"
+      :items="scopeNames"
     ></v-autocomplete>
   </v-card>
 </template>
@@ -28,6 +37,8 @@ export default {
     this.componentNames = UmweltbundesamtService.components.map(
       component => component[4]
     );
+    this.scopeNames = UmweltbundesamtService.scopes.map(scope => scope[5]);
+    console.log(this.scopeNames);
   },
 
   data() {
@@ -36,6 +47,8 @@ export default {
       subtitle: "configure what data you want to get visualized",
       selectedComponent: "",
       componentNames: [],
+      selectedScope: "",
+      scopeNames: [],
     };
   },
 };
