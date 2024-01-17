@@ -211,8 +211,9 @@ export default {
 
 <style scoped>
 #leaflet-map {
-  height: 100vh;
+  height: 100%;
   width: 100%;
   overflow: hidden;
+  position: relative;
 }
 </style>

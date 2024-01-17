@@ -1,12 +1,11 @@
 <template>
   <v-app class="grey lighten-4">
     <Navbar />
-    <div class="map-container">
-      <LeafletMap />
-      <div class="overlay">
-        <DetailsDisplay />
-      </div>
-    </div>
+    <v-main>
+      <LeafletMap class="map-position" />
+      <DetailsDisplay class="details-display-position" />
+      <OptionsDisplay class="options-display-position" />
+    </v-main>
   </v-app>
 </template>
 
@@ -14,24 +13,30 @@
 import Navbar from "./components/Navbar.vue";
 import LeafletMap from "./components/LeafletMap.vue";
 import DetailsDisplay from "./components/DetailsDisplay.vue";
+import OptionsDisplay from "./components/OptionsDisplay.vue";
 
 export default {
   name: "App",
-  components: { Navbar, LeafletMap, DetailsDisplay },
+  components: { Navbar, LeafletMap, DetailsDisplay, OptionsDisplay },
 };
 </script>
 
 <style scoped>
-.map-container {
+.map-position {
   position: relative;
-  height: 100vh; /* Adjust as needed */
 }
 
-.overlay {
+.details-display-position {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 84px;
+  right: 20px;
   z-index: 1000;
-  margin: 20px;
+}
+
+.options-display-position {
+  position: absolute;
+  top: 84px;
+  left: 20px;
+  z-index: 1000;
 }
 </style>

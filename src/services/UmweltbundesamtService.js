@@ -25,7 +25,9 @@ class UmweltbundesamtService {
 
   async fetchAndStoreComponents(lang, code) {
     const components = await this.getComponents(lang, code);
-    this.components = components.data;
+    this.components = Object.values(components.data)
+      .filter(Array.isArray)
+      .filter((item, index) => index !== 0);
   }
 
   async fetchAndStoreNetworks(lang, index) {
