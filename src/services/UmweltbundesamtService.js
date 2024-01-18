@@ -52,7 +52,9 @@ class UmweltbundesamtService {
 
   async fetchAndStoreStationsTypes(lang, index) {
     const stationsTypes = await this.getStationsTypes(lang, index);
-    this.stationsTypes = stationsTypes.data;
+    this.stationsTypes = Object.values(stationsTypes.data)
+      .filter(Array.isArray)
+      .filter((item, index) => item[0] !== "0: Id - string");
   }
 
   async fetchAndStoreTransgressionTypes(lang, index) {

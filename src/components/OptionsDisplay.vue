@@ -69,7 +69,7 @@
       :items="networkNames"
     ></v-autocomplete>
 
-    <v-container class="ma-0 pa-0">
+    <v-container class="pa-0 mb-3">
       <h2 class="text-subtitle-2">Filter Stationen nach geographischer Lage</h2>
       <v-chip-group v-model="selectedStationSettings" multiple filter>
         <v-chip
@@ -79,6 +79,20 @@
           variant="elevated"
         >
           {{ stationSettingName }}
+        </v-chip>
+      </v-chip-group>
+    </v-container>
+
+    <v-container class="pa-0 mb-3">
+      <h2 class="text-subtitle-2">Filter Stationen nach Einsatzgebiet</h2>
+      <v-chip-group v-model="selectedStationTypes" multiple filter>
+        <v-chip
+          v-for="stationTypeName in stationTypeNames"
+          :key="stationTypeName"
+          filter
+          variant="elevated"
+        >
+          {{ stationTypeName }}
         </v-chip>
       </v-chip-group>
     </v-container>
@@ -117,6 +131,12 @@ export default {
     this.selectedStationSettings = UmweltbundesamtService.stationSettings.map(
       stationSetting => stationSetting[0] - 1
     );
+    this.stationTypeNames = UmweltbundesamtService.stationsTypes.map(
+      stationType => stationType[1]
+    );
+    this.selectedStationTypes = UmweltbundesamtService.stationsTypes.map(
+      stationType => stationType[0] - 1
+    );
   },
 
   data() {
@@ -133,6 +153,8 @@ export default {
       networkNames: [],
       selectedStationSettings: [],
       stationSettingNames: [],
+      selectedStationTypes: [],
+      stationTypeNames: [],
       startDate: null,
       endDate: null,
     };
