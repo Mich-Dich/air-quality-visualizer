@@ -52,6 +52,14 @@
       label="Zeitbezug"
       :items="scopeNames"
     ></v-autocomplete>
+
+    <v-autocomplete
+      v-model="selectedStation"
+      variant="outlined"
+      clearable
+      label="Stationen"
+      :items="stationNames"
+    ></v-autocomplete>
   </v-card>
 </template>
 
@@ -70,13 +78,15 @@ export default {
 
   async mounted() {
     await UmweltbundesamtService.fetchAndStoreAllData("de", "code");
-    // UmweltbundesamtService.logAllMembers();
+    UmweltbundesamtService.logAllMembers();
     this.componentNames = UmweltbundesamtService.components.map(
       component => component[4]
     );
     this.scopeNames = UmweltbundesamtService.scopes.map(scope => scope[5]);
+    this.stationNames = UmweltbundesamtService.stations.map(
+      station => station[2]
+    );
   },
-
   data() {
     return {
       title: "Set your options",
@@ -85,6 +95,8 @@ export default {
       componentNames: [],
       selectedScope: "",
       scopeNames: [],
+      selectedStation: "",
+      stationNames: [],
       startDate: null,
       endDate: null,
     };

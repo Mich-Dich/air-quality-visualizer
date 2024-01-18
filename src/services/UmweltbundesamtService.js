@@ -20,7 +20,7 @@ class UmweltbundesamtService {
   // The fetchAndStore methods are used to fetch the data from the API and store it in the class instance
   async fetchAndStoreStations(lang, index) {
     const stations = await this.getStations(lang, index);
-    this.stations = stations.data;
+    this.stations = Object.values(stations.data["data"]);
   }
 
   async fetchAndStoreComponents(lang, code) {
