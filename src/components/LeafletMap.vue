@@ -37,7 +37,7 @@ export default {
     this.initMap();
     await UmweltbundesamtService.fetchAndStoreAllData("de", "code");
     // UmweltbundesamtService.logAllMembers();
-    this.stationsArray = Object.values(UmweltbundesamtService.stations.data);
+    this.stationsArray = UmweltbundesamtService.stations;
     this.getCurrentMapBounds();
     this.updateMarkers();
     // this.addAllMarkers();
