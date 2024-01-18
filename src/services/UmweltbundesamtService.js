@@ -59,7 +59,9 @@ class UmweltbundesamtService {
 
   async fetchAndStoreTransgressionTypes(lang, index) {
     const transgressionTypes = await this.getTransgressionTypes(lang, index);
-    this.transgressionTypes = transgressionTypes.data;
+    this.transgressionTypes = Object.values(transgressionTypes.data)
+      .filter(Array.isArray)
+      .filter((item, index) => item[0] !== "0: Id - string");
   }
 
   // Is called once to get and store all parameters needed for regular API calls

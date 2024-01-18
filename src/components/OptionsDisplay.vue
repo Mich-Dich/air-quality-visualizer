@@ -4,7 +4,7 @@
     :title="title"
     :subtitle="subtitle"
     width="550px"
-    height="800px"
+    height="auto"
     color="rgb(31, 31, 31)"
   >
     <VueDatePicker
@@ -43,6 +43,14 @@
       clearable
       label="Schadstoff"
       :items="componentNames"
+    ></v-autocomplete>
+
+    <v-autocomplete
+      v-model="selectedTransgression"
+      variant="outlined"
+      clearable
+      label="Überschreitungswert"
+      :items="transgressionNames"
     ></v-autocomplete>
 
     <v-autocomplete
@@ -137,6 +145,9 @@ export default {
     this.selectedStationTypes = UmweltbundesamtService.stationsTypes.map(
       stationType => stationType[0] - 1
     );
+    this.transgressionNames = UmweltbundesamtService.transgressionTypes.map(
+      transgression => transgression[1]
+    );
   },
 
   data() {
@@ -149,6 +160,8 @@ export default {
       scopeNames: [],
       selectedStation: "",
       stationNames: [],
+      selectedTransgression: "",
+      transgressionNames: [],
       selectedNetwork: "",
       networkNames: [],
       selectedStationSettings: [],
