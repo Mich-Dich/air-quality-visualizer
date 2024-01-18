@@ -60,6 +60,14 @@
       label="Stationen"
       :items="stationNames"
     ></v-autocomplete>
+
+    <v-autocomplete
+      v-model="selectedNetwork"
+      variant="outlined"
+      clearable
+      label="Bundesländer"
+      :items="networkNames"
+    ></v-autocomplete>
   </v-card>
 </template>
 
@@ -86,6 +94,9 @@ export default {
     this.stationNames = UmweltbundesamtService.stations.map(
       station => station[2]
     );
+    this.networkNames = UmweltbundesamtService.networks.map(
+      network => network[2]
+    );
   },
   data() {
     return {
@@ -97,6 +108,8 @@ export default {
       scopeNames: [],
       selectedStation: "",
       stationNames: [],
+      selectedNetwork: "",
+      networkNames: [],
       startDate: null,
       endDate: null,
     };

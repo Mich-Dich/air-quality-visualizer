@@ -32,7 +32,7 @@ class UmweltbundesamtService {
 
   async fetchAndStoreNetworks(lang, index) {
     const networks = await this.getNetworks(lang, index);
-    this.networks = networks.data;
+    this.networks = Object.values(networks.data["data"]);
   }
 
   async fetchAndStoreScopes(lang, index) {
