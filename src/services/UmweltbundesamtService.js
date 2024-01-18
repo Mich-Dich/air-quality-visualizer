@@ -127,9 +127,41 @@ class UmweltbundesamtService {
     return this.api.get(`/transgressiontypes/json?lang=${lang}`);
   }
 
-  getMeta(use, lang, date_from, date_to, time_from, time_to) {
+  getMeta(use, lang, dateFrom, dateTo, timeFrom, timeTo) {
     return this.api.get(
-      `/meta/json?use=${use}&lang=${lang}&date_from=${date_from}&date_to=${date_to}&time_from=${time_from}&time_to=${time_to}`
+      `/meta/json?use=${use}&lang=${lang}&date_from=${dateFrom}&date_to=${dateTo}&time_from=${timeFrom}&time_to=${timeTo}`
+    );
+  }
+
+  getAirquality(dateFrom, dateTo, timeFrom, timeTo, stationId) {
+    return this.api.get(
+      `/airquality/json?date_from=${dateFrom}&time_from=${timeFrom}&date_to=${dateTo}&time_to=${timeTo}&station=${stationId}`
+    );
+  }
+
+  getStationUpTime() {
+    return this.api.get(`/airquality/limits`);
+  }
+
+  getMeasure(dateFrom, dateTo, timeFrom, timeTo, stationId, component, scope) {
+    return this.api.get(
+      `/measures/json?date_from=${dateFrom}&time_from=${timeFrom}&date_to=${dateTo}&time_to=${timeTo}&station=${stationId}&component=${component}&scope=${scope}`
+    );
+  }
+
+  getMeasureLimits() {
+    return this.api.get(`/measures/limits`);
+  }
+
+  getTransgressions(year, lang, index) {
+    return this.api.get(
+      `/transgressions/json?component=1&year=${year}&lang=${lang}&index=${index}` //transgressions/json?component=1&year=2019&lang=de&index=code"
+    );
+  }
+
+  getAnnualBalances(year, lang, index) {
+    return this.api.get(
+      `/annualbalances/json?component=1&year=${year}&lang=${lang}&index=${index}`
     );
   }
 }
