@@ -71,12 +71,17 @@
           <h2 class="text-subtitle-2">
             Filter Stationen nach geographischer Lage
           </h2>
-          <v-chip-group v-model="selectedStationSettings" multiple filter>
+          <v-chip-group
+            v-model="selectedStationSettings"
+            multiple
+            filter
+            color="primary"
+            variant="tonal"
+          >
             <v-chip
               v-for="stationSettingName in stationSettingNames"
               :key="stationSettingName"
               filter
-              variant="elevated"
             >
               {{ stationSettingName }}
             </v-chip>
@@ -85,12 +90,17 @@
 
         <v-container class="pa-0 mb-3">
           <h2 class="text-subtitle-2">Filter Stationen nach Einsatzgebiet</h2>
-          <v-chip-group v-model="selectedStationTypes" multiple filter>
+          <v-chip-group
+            v-model="selectedStationTypes"
+            multiple
+            filter
+            color="primary"
+            variant="tonal"
+          >
             <v-chip
               v-for="stationTypeName in stationTypeNames"
               :key="stationTypeName"
               filter
-              variant="elevated"
             >
               {{ stationTypeName }}
             </v-chip>
