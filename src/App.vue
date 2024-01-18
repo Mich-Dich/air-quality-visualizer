@@ -1,10 +1,11 @@
 <template>
-  <v-app class="grey lighten-4">
+  <v-app>
     <Navbar />
     <v-main>
       <LeafletMap class="map-position" />
       <DetailsDisplay class="details-display-position" />
       <OptionsDisplay class="options-display-position" />
+      <Slider class="slider-position" />
     </v-main>
   </v-app>
 </template>
@@ -14,10 +15,11 @@ import Navbar from "./components/Navbar.vue";
 import LeafletMap from "./components/LeafletMap.vue";
 import DetailsDisplay from "./components/DetailsDisplay.vue";
 import OptionsDisplay from "./components/OptionsDisplay.vue";
+import Slider from "./components/Slider.vue";
 
 export default {
   name: "App",
-  components: { Navbar, LeafletMap, DetailsDisplay, OptionsDisplay },
+  components: { Navbar, LeafletMap, DetailsDisplay, OptionsDisplay, Slider },
 };
 </script>
 
@@ -37,6 +39,13 @@ export default {
   position: absolute;
   top: 84px;
   left: 20px;
+  z-index: 1000;
+}
+
+.slider-position {
+  position: absolute;
+  bottom: 0;
+  left: 0;
   z-index: 1000;
 }
 </style>
