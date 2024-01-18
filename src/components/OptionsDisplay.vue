@@ -9,7 +9,7 @@
   >
     <v-tabs v-model="tab" bg-color="primary" class="mb-3" fixed-tabs>
       <v-tab value="one">Luftqualität</v-tab>
-      <v-tab value="two">Messwerte</v-tab>
+      <v-tab value="two">Stationen</v-tab>
       <v-tab value="three">Alle Filter</v-tab></v-tabs
     >
 
@@ -109,7 +109,74 @@
       </v-window-item>
 
       <!-- Ansicht Messwerte -->
-      <v-window-item value="two"></v-window-item>
+      <v-window-item value="two">
+        <v-row>
+          <v-col cols="6">
+            <VueDatePicker
+              v-model="Date"
+              placeholder="Datum"
+              dark
+              class="mb-5"
+              :enable-time-picker="false"
+              auto-apply
+              min-date="1 / 1 / 2016"
+              :max-date="new Date()"
+              prevent-min-max-navigation
+              locale="de"
+            ></VueDatePicker>
+          </v-col>
+
+          <v-col cols="6">
+            <VueDatePicker
+              v-model="Time"
+              placeholder="Uhrzeit"
+              dark
+              class="mb-5"
+              time-picker
+              auto-apply
+              locale="de"
+            >
+              <template #input-icon>
+                <img
+                  class="input-slot-image"
+                  src="./icons/clock.png"
+                /> </template
+            ></VueDatePicker>
+          </v-col>
+        </v-row>
+
+        <v-autocomplete
+          v-model="selectedComponent"
+          variant="outlined"
+          clearable
+          label="Schadstoff"
+          :items="componentNames"
+        ></v-autocomplete>
+
+        <v-autocomplete
+          v-model="selectedScope"
+          variant="outlined"
+          clearable
+          label="Zeitbezug"
+          :items="scopeNames"
+        ></v-autocomplete>
+
+        <v-autocomplete
+          v-model="selectedNetwork"
+          variant="outlined"
+          clearable
+          label="Bundesländer"
+          :items="networkNames"
+        ></v-autocomplete>
+
+        <v-autocomplete
+          v-model="selectedStation"
+          variant="outlined"
+          clearable
+          label="Stationen"
+          :items="stationNames"
+        ></v-autocomplete>
+      </v-window-item>
 
       <!-- Ansicht Alle Filter -->
       <v-window-item value="three"
@@ -234,29 +301,29 @@ export default {
     await UmweltbundesamtService.fetchAndStoreAllData("de", "code");
     UmweltbundesamtService.logAllMembers();
     this.componentNames = UmweltbundesamtService.components.map(
-      component => component[4]
+      (component) => component[4]
     );
-    this.scopeNames = UmweltbundesamtService.scopes.map(scope => scope[5]);
+    this.scopeNames = UmweltbundesamtService.scopes.map((scope) => scope[5]);
     this.stationNames = UmweltbundesamtService.stations.map(
-      station => station[2]
+      (station) => station[2]
     );
     this.networkNames = UmweltbundesamtService.networks.map(
-      network => network[2]
+      (network) => network[2]
     );
     this.stationSettingNames = UmweltbundesamtService.stationSettings.map(
-      stationSetting => stationSetting[1]
+      (stationSetting) => stationSetting[1]
     );
     this.selectedStationSettings = UmweltbundesamtService.stationSettings.map(
-      stationSetting => stationSetting[0] - 1
+      (stationSetting) => stationSetting[0] - 1
     );
     this.stationTypeNames = UmweltbundesamtService.stationsTypes.map(
-      stationType => stationType[1]
+      (stationType) => stationType[1]
     );
     this.selectedStationTypes = UmweltbundesamtService.stationsTypes.map(
-      stationType => stationType[0] - 1
+      (stationType) => stationType[0] - 1
     );
     this.transgressionNames = UmweltbundesamtService.transgressionTypes.map(
-      transgression => transgression[1]
+      (transgression) => transgression[1]
     );
   },
 
