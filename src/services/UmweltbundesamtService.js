@@ -1,4 +1,5 @@
 import axios from "axios";
+import { inferRuntimeType } from "vue/compiler-sfc";
 
 class UmweltbundesamtService {
   constructor() {
@@ -44,7 +45,9 @@ class UmweltbundesamtService {
 
   async fetchAndStoreStationSettings(lang, index) {
     const stationSettings = await this.getStationSettings(lang, index);
-    this.stationSettings = stationSettings.data;
+    this.stationSettings = Object.values(stationSettings.data)
+      .filter(Array.isArray)
+      .filter((item, index) => item[0] !== "0: Id - string");
   }
 
   async fetchAndStoreStationsTypes(lang, index) {

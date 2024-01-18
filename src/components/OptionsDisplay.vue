@@ -3,7 +3,7 @@
     class="pa-3"
     :title="title"
     :subtitle="subtitle"
-    width="500px"
+    width="550px"
     height="800px"
     color="rgb(31, 31, 31)"
   >
@@ -68,6 +68,20 @@
       label="Bundesländer"
       :items="networkNames"
     ></v-autocomplete>
+
+    <v-container class="ma-0 pa-0">
+      <h2 class="text-subtitle-2">Filter Stationen nach geographischer Lage</h2>
+      <v-chip-group v-model="selectedStationSettings" multiple filter>
+        <v-chip
+          v-for="stationSettingName in stationSettingNames"
+          :key="stationSettingName"
+          filter
+          variant="elevated"
+        >
+          {{ stationSettingName }}
+        </v-chip>
+      </v-chip-group>
+    </v-container>
   </v-card>
 </template>
 
@@ -97,7 +111,14 @@ export default {
     this.networkNames = UmweltbundesamtService.networks.map(
       network => network[2]
     );
+    this.stationSettingNames = UmweltbundesamtService.stationSettings.map(
+      stationSetting => stationSetting[1]
+    );
+    this.selectedStationSettings = UmweltbundesamtService.stationSettings.map(
+      stationSetting => stationSetting[0] - 1
+    );
   },
+
   data() {
     return {
       title: "Set your options",
@@ -110,6 +131,8 @@ export default {
       stationNames: [],
       selectedNetwork: "",
       networkNames: [],
+      selectedStationSettings: [],
+      stationSettingNames: [],
       startDate: null,
       endDate: null,
     };
