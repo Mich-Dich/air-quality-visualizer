@@ -9,3 +9,8 @@ siehe unten)
 Sie, dass das Standardverhalten nicht modifiziert werden sollte:  
 o npm install bzw.
 o npm run dev
+
+Sources:
+Navbar:
+https://www.youtube.com/watch?v=pbU9JxMriOo
+https://www.youtube.com/watch?v=Qnj5CsUD0cs&t=12s
