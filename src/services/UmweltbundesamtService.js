@@ -134,9 +134,19 @@ class UmweltbundesamtService {
   }
 
   getAirquality(dateFrom, dateTo, timeFrom, timeTo, stationId) {
-    return this.api.get(
-      `/airquality/json?date_from=${dateFrom}&time_from=${timeFrom}&date_to=${dateTo}&time_to=${timeTo}&station=${stationId}`
-    );
+    //if called whithout stationId, get all stations
+    if (stationId === null) {
+      console.log(
+        `/airquality/json?date_from=${dateFrom}&time_from=${timeFrom}&date_to=${dateTo}&time_to=${timeTo}`
+      );
+      return this.api.get(
+        `/airquality/json?date_from=${dateFrom}&time_from=${timeFrom}&date_to=${dateTo}&time_to=${timeTo}`
+      );
+    } else {
+      return this.api.get(
+        `/airquality/json?date_from=${dateFrom}&time_from=${timeFrom}&date_to=${dateTo}&time_to=${timeTo}&station=${stationId}`
+      );
+    }
   }
 
   getStationUpTime() {

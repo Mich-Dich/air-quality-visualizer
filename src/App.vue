@@ -4,7 +4,10 @@
     <v-main>
       <LeafletMap class="map-position" />
       <DetailsDisplay class="details-display-position" />
-      <OptionsDisplay class="options-display-position" />
+      <OptionsDisplay
+        class="options-display-position"
+        @airQualityDataFetched="handleAirQualityData"
+      />
       <Slider class="slider-position" />
     </v-main>
   </v-app>
@@ -20,6 +23,19 @@ import Slider from "./components/Slider.vue";
 export default {
   name: "App",
   components: { Navbar, LeafletMap, DetailsDisplay, OptionsDisplay, Slider },
+  data() {
+    return {
+      airQualityData: null,
+    };
+  },
+  methods: {
+    handleAirQualityData(airQualityData) {
+      airQualityData = airQualityData.data.data;
+      console.log("extracted air quality data", airQualityData);
+
+      // TODO: pass the air quality data to the map component to display the data on the map
+    },
+  },
 };
 </script>
 
