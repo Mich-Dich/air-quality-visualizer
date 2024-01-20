@@ -365,26 +365,26 @@ export default {
       this.transgressionTypes = UmweltbundesamtService.transgressionTypes;
     },
     extractInputValues() {
-      this.componentNames = this.components.map(component => component[4]);
-      this.scopeNames = this.scopes.map(scope => scope[5]);
-      this.stationNames = this.stations.map(station => station[2]);
-      this.networkNames = this.networks.map(network => network[2]);
+      this.componentNames = this.components.map((component) => component[4]);
+      this.scopeNames = this.scopes.map((scope) => scope[5]);
+      this.stationNames = this.stations.map((station) => station[2]);
+      this.networkNames = this.networks.map((network) => network[2]);
       this.stationSettingNames = this.stationSettings.map(
-        stationSetting => stationSetting[1]
+        (stationSetting) => stationSetting[1]
       );
       this.stationTypeNames = this.stationTypes.map(
-        stationType => stationType[1]
+        (stationType) => stationType[1]
       );
       this.transgressionNames = this.transgressionTypes.map(
-        transgression => transgression[1]
+        (transgression) => transgression[1]
       );
     },
     setChipGroupValues() {
       this.apiQueryOptions.stationSettings = this.stationSettings.map(
-        stationSetting => stationSetting[0] - 1
+        (stationSetting) => stationSetting[0] - 1
       );
       this.apiQueryOptions.stationTypes = this.stationTypes.map(
-        stationType => stationType[0] - 1
+        (stationType) => stationType[0] - 1
       );
     },
 
@@ -433,7 +433,7 @@ export default {
       // if null is selected, get all stations, else get the station id
       if (sendOptions.station !== null) {
         sendOptions.station = this.stations.find(
-          station => station[2] === sendOptions.station
+          (station) => station[2] === sendOptions.station
         )[0];
       }
 

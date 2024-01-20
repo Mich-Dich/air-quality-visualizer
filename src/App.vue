@@ -2,7 +2,7 @@
   <v-app>
     <Navbar />
     <v-main>
-      <LeafletMap class="map-position" />
+      <LeafletMap class="map-position" :airQualityData="airQualityData" />
       <DetailsDisplay class="details-display-position" />
       <OptionsDisplay
         class="options-display-position"
@@ -34,6 +34,7 @@ export default {
       console.log("extracted air quality data", airQualityData);
 
       // TODO: pass the air quality data to the map component to display the data on the map
+      this.airQualityData = airQualityData;
     },
   },
 };

@@ -12,6 +12,19 @@ export default {
   // The component's name:
   name: "LeafletMap",
 
+  props: {
+    airQualityData: {
+      type: Object,
+    },
+  },
+  watch: {
+    //Function is called when airQualityData changes
+    airQualityData(airQualityData) {
+      console.log("New Air Quality Data:", airQualityData);
+      this.updateMarkerPopup(airQualityData);
+    },
+  },
+
   data() {
     return {
       mapId: "leaflet-map",
@@ -57,7 +70,7 @@ export default {
     },
 
     addAllMarkers() {
-      this.stationsArray.forEach(station => {
+      this.stationsArray.forEach((station) => {
         const marker = L.marker([
           parseFloat(station[8]),
           parseFloat(station[7]),
@@ -69,7 +82,7 @@ export default {
 
     updateMarkers() {
       // Durchläuft jedes Element im stationsArray.
-      this.stationsArray.forEach(station => {
+      this.stationsArray.forEach((station) => {
         // Konvertiert die Breiten- und Längengrade der Station in Fließkommazahlen.
         const lat = parseFloat(station[8]);
         const lng = parseFloat(station[7]);
@@ -92,6 +105,39 @@ export default {
         // Wenn der Marker außerhalb der Begrenzungen liegt und bereits existiert, wird er entfernt.
         else if (!markerInBounds && existingMarker) {
           this.removeMarker(existingMarker);
+        }
+      });
+    },
+
+    updateMarkerPopup(airQualityData) {
+      // Durchläuft jedes Element im stationsArray.
+      this.stationsArray.forEach((station) => {
+        // Konvertiert die Breiten- und Längengrade der Station in Fließkommazahlen.
+        const lat = parseFloat(station[8]);
+        const lng = parseFloat(station[7]);
+
+        let airQualityIndex = null;
+        // Iterates over keys of airQualityData
+        for (const stationKey in airQualityData) {
+          if (stationKey === station[0]) {
+            const stationAirQualityObject = airQualityData[stationKey];
+            // Extract date object -> there is only one
+            const stationAirQualityData = Object.values(
+              stationAirQualityObject
+            )[0];
+
+            if ("1" in stationAirQualityData) {
+              airQualityIndex = stationAirQualityData["1"];
+              break;
+            }
+          }
+        }
+
+        if (airQualityIndex !== null) {
+          L.marker([parseFloat(station[8]), parseFloat(station[7])])
+            .addTo(this.mapInstance)
+            .bindPopup(`${station[2]} (Air Quality Index: ${airQualityIndex})`);
+          console.log("Wert von '1':", airQualityIndex);
         }
       });
     },
@@ -121,7 +167,7 @@ export default {
     },
 
     addMarkersToCities(citiesArray) {
-      citiesArray.forEach(city => {
+      citiesArray.forEach((city) => {
         const marker = L.marker([city.Breitengrad, city.Längengrad])
           .addTo(this.mapInstance)
           .bindPopup(city.Ort);
@@ -148,7 +194,7 @@ export default {
 
       //filters out cities that are not in the viewable window
       if (onlyInView) {
-        filteredCities = filteredCities.filter(city => {
+        filteredCities = filteredCities.filter((city) => {
           return (
             city.Breitengrad <= this.currentMapBounds.A.lat &&
             city.Breitengrad >= this.currentMapBounds.D.lat &&
@@ -161,7 +207,7 @@ export default {
       // filters out duplicate cities with different postal codes
       if (onlyOneDistrictPerCity) {
         const uniqueCities = {};
-        filteredCities = filteredCities.filter(city => {
+        filteredCities = filteredCities.filter((city) => {
           if (!uniqueCities[city.Ort]) {
             uniqueCities[city.Ort] = true;
             return true;
