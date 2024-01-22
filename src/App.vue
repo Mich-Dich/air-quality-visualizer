@@ -2,11 +2,16 @@
   <v-app>
     <Navbar />
     <v-main>
-      <LeafletMap class="map-position" :airQualityData="airQualityData" />
+      <LeafletMap
+        class="map-position"
+        :airQualityData="airQualityData"
+        :filterOptions="filterOptions"
+      />
       <DetailsDisplay class="details-display-position" />
       <OptionsDisplay
         class="options-display-position"
-        @airQualityDataFetched="handleAirQualityData"
+        @airQualityDataFetched="handleAirQualityDataChanged"
+        @filtersChanged="handleFiltersChanged"
       />
       <Slider class="slider-position" />
     </v-main>
@@ -26,15 +31,22 @@ export default {
   data() {
     return {
       airQualityData: null,
+      filterOptions: null,
     };
   },
   methods: {
-    handleAirQualityData(airQualityData) {
+    handleAirQualityDataChanged(airQualityData) {
       airQualityData = airQualityData.data.data;
       console.log("extracted air quality data", airQualityData);
 
-      // TODO: pass the air quality data to the map component to display the data on the map
-      this.airQualityData = airQualityData;
+      if (airQualityData) {
+        this.airQualityData = airQualityData;
+      }
+    },
+
+    handleFiltersChanged(filterOptions) {
+      console.log("filter changed", filterOptions);
+      this.filterOptions = filterOptions;
     },
   },
 };

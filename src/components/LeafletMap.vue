@@ -16,12 +16,24 @@ export default {
     airQualityData: {
       type: Object,
     },
+    filterOptions: {
+      type: Object,
+    },
   },
+
   watch: {
-    //Function is called when airQualityData changes
-    airQualityData(airQualityData) {
-      console.log("New Air Quality Data:", airQualityData);
-      this.visualizeAirQualityIndex(airQualityData);
+    filterOptions: {
+      handler() {
+        this.visualizeAirQualityIndex();
+      },
+      deep: true,
+    },
+
+    airQualityData: {
+      handler() {
+        this.visualizeAirQualityIndex();
+      },
+      deep: true,
     },
   },
 
@@ -40,7 +52,6 @@ export default {
       mapInstance: null,
       currentMapBounds: null,
       filteredCities: null,
-      filterOptions: { onlyInView: true, onlyOneDistrictPerCity: true },
       stationsArray: [],
       markerMap: new Map(),
       circles: [],
@@ -110,7 +121,7 @@ export default {
       });
     },
 
-    visualizeAirQualityIndex(airQualityData) {
+    visualizeAirQualityIndex() {
       // Removes all circles from the map to avoid duplicates.
       this.circles.forEach(circle => {
         circle.remove();
@@ -119,12 +130,20 @@ export default {
       // Empties the array of circles.
       this.circles = [];
 
+      if (!this.airQualityData) {
+        return;
+      }
       // Converts the air quality data into a Map for faster lookup.
       // The keys of the Map are the station IDs and the values are the associated air quality data.
-      const airQualityMap = new Map(Object.entries(airQualityData));
+      const airQualityMap = new Map(Object.entries(this.airQualityData));
 
-      // Iterates over each station in the array of stations.
-      this.stationsArray.forEach(station => {
+      // Filter stations based on the filterOptions prop
+      const filteredStations = this.filterStations();
+      console.log("filteredStations", filteredStations);
+      // const filteredStations = this.stationsArray;
+
+      // Iterates over each station in the array of filtered stations.
+      filteredStations.forEach(station => {
         // Converts the latitude and longitude of the station into floating point numbers.
         const latitude = parseFloat(station[8]);
         const longitude = parseFloat(station[7]);
@@ -133,8 +152,9 @@ export default {
         // The station ID is used as the key to find the associated air quality data.
         const stationAirQualityData = airQualityMap.get(station[0]);
 
-        // Initializes the air quality index to null.
+        // Initializes the air quality and incomplete data flags.
         let airQualityIndex = null;
+        let incompleteData = false;
 
         // Checks if air quality data for the current station was found.
         if (stationAirQualityData) {
@@ -143,28 +163,31 @@ export default {
 
           // Sets the air quality index to the value of the key "1".
           airQualityIndex = dataArray[1];
+
+          // Sets the incomplete data flag
+          incompleteData = dataArray[2];
         }
 
         // Determines the color of the circle based on the air quality index.
         const circleColor =
           this.getColorBasedOnAirQualityIndex(airQualityIndex);
 
-        // // filter stations with no air quality data
-        // if (airQualityIndex === null) {
-        //   return;
-        // }
-
         // Draws a circle at the position of the station on the map.
         // The color and fill color of the circle are based on the air quality index.
-        const circle = L.circle([latitude, longitude], {
-          color: circleColor,
-          fillColor: circleColor,
-          fillOpacity: 0.5,
-          radius: 800 / Math.pow(2, this.mapInstance.getZoom() - 10),
-        }).addTo(this.mapInstance);
+        if (circleColor !== "grey") {
+          const circle = L.circle([latitude, longitude], {
+            color: "black",
+            weight: 2,
+            opacity: 1,
+            dashArray: incompleteData ? "4, 4" : "", // If the data is incomplete, the circle is dashed.
+            fillColor: circleColor,
+            fillOpacity: 0.5,
+            radius: 1000 / Math.pow(2, this.mapInstance.getZoom() - 10),
+          }).addTo(this.mapInstance);
 
-        // Stores a reference to the circle.
-        this.circles.push(circle);
+          // Stores a reference to the circle.
+          this.circles.push(circle);
+        }
       });
     },
 
@@ -191,7 +214,7 @@ export default {
 
       // Kreisgröße basierend auf der Zoomstufe anpassen
       let scaleFactor = Math.pow(2, currentZoom - initialZoom);
-      let newRadius = 800 / scaleFactor;
+      let newRadius = 1000 / scaleFactor;
       console.log("Zoomstufe:", currentZoom);
       console.log("Skalierungsfaktor:", scaleFactor);
       console.log("Neuer Radius:", newRadius);
@@ -199,6 +222,19 @@ export default {
       this.circles.forEach(circle => {
         circle.setRadius(newRadius);
       });
+    },
+
+    filterStations() {
+      let filteredStations = this.stationsArray;
+      let stationTypesArray = Array.from(this.filterOptions.stationTypes).map(
+        type => type.toString()
+      );
+
+      filteredStations = filteredStations.filter(station => {
+        return stationTypesArray.includes(station[11].toString());
+      });
+
+      return filteredStations;
     },
 
     logInfo() {

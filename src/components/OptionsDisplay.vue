@@ -53,7 +53,7 @@
         </v-row>
 
         <v-autocomplete
-          v-model="apiQueryOptions.station"
+          v-model="filterOptions.station"
           variant="outlined"
           clearable
           label="Stationen"
@@ -61,7 +61,7 @@
         ></v-autocomplete>
 
         <v-autocomplete
-          v-model="apiQueryOptions.network"
+          v-model="filterOptions.network"
           variant="outlined"
           clearable
           label="Bundesländer"
@@ -73,7 +73,7 @@
             Filter Stationen nach geographischer Lage
           </h2>
           <v-chip-group
-            v-model="apiQueryOptions.stationSettings"
+            v-model="filterOptions.stationSettings"
             multiple
             filter
             color="primary"
@@ -92,7 +92,7 @@
         <v-container class="pa-0 mb-3">
           <h2 class="text-subtitle-2">Filter Stationen nach Einsatzgebiet</h2>
           <v-chip-group
-            v-model="apiQueryOptions.stationTypes"
+            v-model="filterOptions.stationTypes"
             multiple
             filter
             color="primary"
@@ -151,7 +151,7 @@
         </v-row>
 
         <v-autocomplete
-          v-model="apiQueryOptions.component"
+          v-model="filterOptions.component"
           variant="outlined"
           clearable
           label="Schadstoff"
@@ -159,7 +159,7 @@
         ></v-autocomplete>
 
         <v-autocomplete
-          v-model="apiQueryOptions.scope"
+          v-model="filterOptions.scope"
           variant="outlined"
           clearable
           label="Zeitbezug"
@@ -167,7 +167,7 @@
         ></v-autocomplete>
 
         <v-autocomplete
-          v-model="apiQueryOptions.network"
+          v-model="filterOptions.network"
           variant="outlined"
           clearable
           label="Bundesländer"
@@ -175,7 +175,7 @@
         ></v-autocomplete>
 
         <v-autocomplete
-          v-model="apiQueryOptions.station"
+          v-model="filterOptions.station"
           variant="outlined"
           clearable
           label="Stationen"
@@ -216,7 +216,7 @@
         ></VueDatePicker>
 
         <v-autocomplete
-          v-model="apiQueryOptions.component"
+          v-model="filterOptions.component"
           variant="outlined"
           clearable
           label="Schadstoff"
@@ -224,7 +224,7 @@
         ></v-autocomplete>
 
         <v-autocomplete
-          v-model="apiQueryOptions.transgressionType"
+          v-model="filterOptions.transgressionType"
           variant="outlined"
           clearable
           label="Überschreitungswert"
@@ -232,7 +232,7 @@
         ></v-autocomplete>
 
         <v-autocomplete
-          v-model="apiQueryOptions.scope"
+          v-model="filterOptions.scope"
           variant="outlined"
           clearable
           label="Zeitbezug"
@@ -240,7 +240,7 @@
         ></v-autocomplete>
 
         <v-autocomplete
-          v-model="apiQueryOptions.station"
+          v-model="filterOptions.station"
           variant="outlined"
           clearable
           label="Stationen"
@@ -248,7 +248,7 @@
         ></v-autocomplete>
 
         <v-autocomplete
-          v-model="apiQueryOptions.network"
+          v-model="filterOptions.network"
           variant="outlined"
           clearable
           label="Bundesländer"
@@ -259,11 +259,7 @@
           <h2 class="text-subtitle-2">
             Filter Stationen nach geographischer Lage
           </h2>
-          <v-chip-group
-            v-model="apiQueryOptions.stationSettings"
-            multiple
-            filter
-          >
+          <v-chip-group v-model="filterOptions.stationSettings" multiple filter>
             <v-chip
               v-for="stationSettingName in stationSettingNames"
               :key="stationSettingName"
@@ -277,7 +273,7 @@
 
         <v-container class="pa-0 mb-3">
           <h2 class="text-subtitle-2">Filter Stationen nach Einsatzgebiet</h2>
-          <v-chip-group v-model="apiQueryOptions.stationTypes" multiple filter>
+          <v-chip-group v-model="filterOptions.stationTypes" multiple filter>
             <v-chip
               v-for="stationTypeName in stationTypeNames"
               :key="stationTypeName"
@@ -302,10 +298,19 @@ export default {
   // The component's name:
   name: "OptionsDisplay",
 
-  emits: ["airQualityDataFetched"],
+  emits: ["airQualityDataFetched", "filtersChanged"],
 
   components: {
     VueDatePicker,
+  },
+
+  watch: {
+    filterOptions: {
+      handler(filterOptions) {
+        this.$emit("filtersChanged", filterOptions);
+      },
+      deep: true,
+    },
   },
 
   async mounted() {
@@ -343,6 +348,9 @@ export default {
         endDate: new Date(),
         startHour: this.getPriorHour(),
         endHour: this.getPriorHour(),
+      },
+
+      filterOptions: {
         station: null,
         component: null,
         network: null,
@@ -365,26 +373,26 @@ export default {
       this.transgressionTypes = UmweltbundesamtService.transgressionTypes;
     },
     extractInputValues() {
-      this.componentNames = this.components.map((component) => component[4]);
-      this.scopeNames = this.scopes.map((scope) => scope[5]);
-      this.stationNames = this.stations.map((station) => station[2]);
-      this.networkNames = this.networks.map((network) => network[2]);
+      this.componentNames = this.components.map(component => component[4]);
+      this.scopeNames = this.scopes.map(scope => scope[5]);
+      this.stationNames = this.stations.map(station => station[2]);
+      this.networkNames = this.networks.map(network => network[2]);
       this.stationSettingNames = this.stationSettings.map(
-        (stationSetting) => stationSetting[1]
+        stationSetting => stationSetting[1]
       );
       this.stationTypeNames = this.stationTypes.map(
-        (stationType) => stationType[1]
+        stationType => stationType[1]
       );
       this.transgressionNames = this.transgressionTypes.map(
-        (transgression) => transgression[1]
+        transgression => transgression[1]
       );
     },
     setChipGroupValues() {
-      this.apiQueryOptions.stationSettings = this.stationSettings.map(
-        (stationSetting) => stationSetting[0] - 1
+      this.filterOptions.stationSettings = this.stationSettings.map(
+        stationSetting => stationSetting[0] - 1
       );
-      this.apiQueryOptions.stationTypes = this.stationTypes.map(
-        (stationType) => stationType[0] - 1
+      this.filterOptions.stationTypes = this.stationTypes.map(
+        stationType => stationType[0] - 1
       );
     },
 
@@ -430,20 +438,12 @@ export default {
       sendOptions.endDate = this.formatDate(sendOptions.endDate);
       sendOptions.endHour = this.formatHour(sendOptions.endHour);
 
-      // if null is selected, get all stations, else get the station id
-      if (sendOptions.station !== null) {
-        sendOptions.station = this.stations.find(
-          (station) => station[2] === sendOptions.station
-        )[0];
-      }
-
       console.log(sendOptions);
       const airqualityData = await UmweltbundesamtService.getAirquality(
         sendOptions.startDate,
         sendOptions.startDate,
         sendOptions.startHour,
-        sendOptions.startHour,
-        sendOptions.station
+        sendOptions.startHour
       );
 
       console.log("return of getAirquality()", airqualityData);
