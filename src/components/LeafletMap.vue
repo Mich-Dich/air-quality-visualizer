@@ -21,7 +21,7 @@ export default {
     //Function is called when airQualityData changes
     airQualityData(airQualityData) {
       console.log("New Air Quality Data:", airQualityData);
-      this.updateMarkerPopup(airQualityData);
+      this.visualizeAirQualityIndex(airQualityData);
     },
   },
 
@@ -51,8 +51,8 @@ export default {
     await UmweltbundesamtService.fetchAndStoreAllData("de", "code");
     // UmweltbundesamtService.logAllMembers();
     this.stationsArray = UmweltbundesamtService.stations;
-    this.getCurrentMapBounds();
-    this.updateMarkers();
+    // this.getCurrentMapBounds();
+    // this.updateMarkers();
     // this.addAllMarkers();
   },
 
@@ -64,13 +64,13 @@ export default {
 
   methods: {
     handleMapMoved() {
-      this.getCurrentMapBounds();
-      this.updateMarkers();
+      // this.getCurrentMapBounds();
+      // this.updateMarkers();
       // this.logInfo();
     },
 
     addAllMarkers() {
-      this.stationsArray.forEach((station) => {
+      this.stationsArray.forEach(station => {
         const marker = L.marker([
           parseFloat(station[8]),
           parseFloat(station[7]),
@@ -82,7 +82,7 @@ export default {
 
     updateMarkers() {
       // Durchläuft jedes Element im stationsArray.
-      this.stationsArray.forEach((station) => {
+      this.stationsArray.forEach(station => {
         // Konvertiert die Breiten- und Längengrade der Station in Fließkommazahlen.
         const lat = parseFloat(station[8]);
         const lng = parseFloat(station[7]);
@@ -109,44 +109,64 @@ export default {
       });
     },
 
-    updateMarkerPopup(airQualityData) {
-      // Durchläuft jedes Element im stationsArray.
-      this.stationsArray.forEach((station) => {
+    visualizeAirQualityIndex(airQualityData) {
+      // Konvertiert die Luftqualitätsdaten in eine Map für eine schnellere Suche.
+      // Die Schlüssel der Map sind die Stations-IDs und die Werte sind die zugehörigen Luftqualitätsdaten.
+      const airQualityMap = new Map(Object.entries(airQualityData));
+
+      // Durchläuft jede Station im Array der Stationen.
+      this.stationsArray.forEach(station => {
         // Konvertiert die Breiten- und Längengrade der Station in Fließkommazahlen.
-        const lat = parseFloat(station[8]);
-        const lng = parseFloat(station[7]);
+        const latitude = parseFloat(station[8]);
+        const longitude = parseFloat(station[7]);
 
+        // Holt die Luftqualitätsdaten für die aktuelle Station aus der Map.
+        // Die Stations-ID wird als Schlüssel verwendet, um die zugehörigen Luftqualitätsdaten zu finden.
+        const stationAirQualityData = airQualityMap.get(station[0]);
+
+        // Initialisiert den Luftqualitätsindex mit null.
         let airQualityIndex = null;
-        // Iterates over keys of airQualityData
-        for (const stationKey in airQualityData) {
-          if (stationKey === station[0]) {
-            const stationAirQualityObject = airQualityData[stationKey];
-            // Extract date object -> there is only one
-            const stationAirQualityData = Object.values(
-              stationAirQualityObject
-            )[0];
 
-            if ("1" in stationAirQualityData) {
-              airQualityIndex = stationAirQualityData["1"];
-              break;
-            }
-          }
+        // Überprüft, ob Luftqualitätsdaten für die aktuelle Station gefunden wurden.
+        if (stationAirQualityData) {
+          // Extrahiert das erste Luftqualitätsdatenobjekt für die aktuelle Station.
+          const dataArray = Object.values(stationAirQualityData)[0];
+
+          // Setzt den Luftqualitätsindex auf den Wert des Schlüssels "1".
+          airQualityIndex = dataArray[1];
         }
 
-        if (airQualityIndex !== null) {
-          L.marker([parseFloat(station[8]), parseFloat(station[7])])
-            .addTo(this.mapInstance)
-            .bindPopup(`${station[2]} (Air Quality Index: ${airQualityIndex})`);
-          console.log("Wert von '1':", airQualityIndex);
-        }
+        // Bestimmt die Farbe des Kreises basierend auf dem Luftqualitätsindex.
+        const circleColor =
+          this.getColorBasedOnAirQualityIndex(airQualityIndex);
+
+        // Zeichnet einen Kreis an der Position der Station auf der Karte.
+        // Die Farbe und Füllfarbe des Kreises basieren auf dem Luftqualitätsindex.
+        L.circle([latitude, longitude], {
+          color: circleColor,
+          fillColor: circleColor,
+          fillOpacity: 0.5,
+          radius: 5500,
+        }).addTo(this.mapInstance);
       });
     },
 
-    createMarker(station) {
-      const marker = L.marker([parseFloat(station[8]), parseFloat(station[7])])
-        .addTo(this.mapInstance)
-        .bindPopup(station[2]);
-      return marker;
+    // Hilfsfunktion, um die Farbe eines Kreises basierend auf dem Luftqualitätsindex zu bestimmen.
+    getColorBasedOnAirQualityIndex(airQualityIndex) {
+      switch (airQualityIndex) {
+        case 0:
+          return "green";
+        case 1:
+          return "yellow";
+        case 2:
+          return "orange";
+        case 3:
+          return "red";
+        case 4:
+          return "purple";
+        default:
+          return "grey";
+      }
     },
 
     logInfo() {
@@ -167,7 +187,7 @@ export default {
     },
 
     addMarkersToCities(citiesArray) {
-      citiesArray.forEach((city) => {
+      citiesArray.forEach(city => {
         const marker = L.marker([city.Breitengrad, city.Längengrad])
           .addTo(this.mapInstance)
           .bindPopup(city.Ort);
@@ -194,7 +214,7 @@ export default {
 
       //filters out cities that are not in the viewable window
       if (onlyInView) {
-        filteredCities = filteredCities.filter((city) => {
+        filteredCities = filteredCities.filter(city => {
           return (
             city.Breitengrad <= this.currentMapBounds.A.lat &&
             city.Breitengrad >= this.currentMapBounds.D.lat &&
@@ -207,7 +227,7 @@ export default {
       // filters out duplicate cities with different postal codes
       if (onlyOneDistrictPerCity) {
         const uniqueCities = {};
-        filteredCities = filteredCities.filter((city) => {
+        filteredCities = filteredCities.filter(city => {
           if (!uniqueCities[city.Ort]) {
             uniqueCities[city.Ort] = true;
             return true;
