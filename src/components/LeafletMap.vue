@@ -229,9 +229,18 @@ export default {
       let stationTypesArray = Array.from(this.filterOptions.stationTypes).map(
         type => type.toString()
       );
+      let stationSettings = Array.from(this.filterOptions.stationSettings).map(
+        setting => setting.toString()
+      );
 
       filteredStations = filteredStations.filter(station => {
-        return stationTypesArray.includes(station[11].toString());
+        if (stationTypesArray.includes(station[11].toString()) == false) {
+          return false;
+        } else if (stationSettings.includes(station[10].toString()) == false) {
+          return false;
+        } else {
+          return true;
+        }
       });
 
       return filteredStations;

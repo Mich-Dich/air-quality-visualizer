@@ -82,6 +82,7 @@
             <v-chip
               v-for="stationSettingName in stationSettingNames"
               :key="stationSettingName"
+              :value="stationSettingNames.indexOf(stationSettingName) + 1"
               filter
             >
               {{ stationSettingName }}
@@ -101,6 +102,7 @@
             <v-chip
               v-for="stationTypeName in stationTypeNames"
               :key="stationTypeName"
+              :value="stationTypeNames.indexOf(stationTypeName) + 1"
               filter
             >
               {{ stationTypeName }}
@@ -388,11 +390,12 @@ export default {
       );
     },
     setChipGroupValues() {
-      this.filterOptions.stationSettings = this.stationSettings.map(
-        stationSetting => stationSetting[0] - 1
+      // initialize all chip groups with all been selected
+      this.filterOptions.stationSettings = this.stationSettingNames.map(
+        (stationSettingName, index) => index + 1
       );
-      this.filterOptions.stationTypes = this.stationTypes.map(
-        stationType => stationType[0] - 1
+      this.filterOptions.stationTypes = this.stationTypeNames.map(
+        (stationTypeName, index) => index + 1
       );
     },
 
@@ -410,7 +413,7 @@ export default {
 
     getPriorHour: function () {
       let date = new Date();
-      return { hours: date.getHours() - 1, minutes: 0 };
+      return { hours: date.getHours() - 2, minutes: 0 }; // 2 hours prior to now because the data is not available in real time
     },
 
     async validateAndSentData() {
