@@ -6,6 +6,7 @@
         class="map-position"
         :airQualityData="airQualityData"
         :filterOptions="filterOptions"
+        :germanyMapOverlay="germanyMapOverlay"
       />
       <DetailsDisplay class="details-display-position" />
       <OptionsDisplay
@@ -14,6 +15,17 @@
         @filtersChanged="handleFiltersChanged"
       />
       <Slider class="slider-position" />
+      <v-btn
+        @click="this.germanyMapOverlay = !this.germanyMapOverlay"
+        class="toggle-borders-button"
+        variant="elevated"
+        color="primary"
+        size="large"
+      >
+        <v-icon>mdi mdi-map-outline</v-icon>
+        <span v-if="germanyMapOverlay">Deutschland Overlay ausblenden</span>
+        <span v-else>Deutschland Overlay einblenden</span>
+      </v-btn>
     </v-main>
   </v-app>
 </template>
@@ -32,6 +44,7 @@ export default {
     return {
       airQualityData: null,
       filterOptions: null,
+      germanyMapOverlay: true,
     };
   },
   methods: {
@@ -75,6 +88,13 @@ export default {
   position: absolute;
   bottom: 0;
   left: 0;
+  z-index: 1000;
+}
+
+.toggle-borders-button {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
   z-index: 1000;
 }
 </style>

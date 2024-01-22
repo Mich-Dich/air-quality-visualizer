@@ -7,6 +7,7 @@ import "leaflet/dist/leaflet.css";
 import cities from "../assets/Städtedaten_2.json";
 import L, { map, marker } from "leaflet";
 import UmweltbundesamtService from "../services/UmweltbundesamtService";
+import germanBorders from "../assets/germany.json";
 
 export default {
   // The component's name:
@@ -18,6 +19,9 @@ export default {
     },
     filterOptions: {
       type: Object,
+    },
+    germanyMapOverlay: {
+      type: Boolean,
     },
   },
 
@@ -35,14 +39,21 @@ export default {
       },
       deep: true,
     },
+
+    germanyMapOverlay: {
+      handler() {
+        this.toggleMapOverlay();
+      },
+      deep: true,
+    },
   },
 
   data() {
     return {
       mapId: "leaflet-map",
       mapOptions: {
-        center: L.latLng(47.6526, 9.4794),
-        zoom: 10,
+        center: L.latLng(51.1657, 10.4515),
+        zoom: 6,
         zoomControl: true,
         // minZoom: 12,
         zoomAnimation: false,
@@ -177,7 +188,7 @@ export default {
         if (circleColor !== "grey") {
           const circle = L.circle([latitude, longitude], {
             color: "black",
-            weight: 2,
+            weight: 1,
             opacity: 1,
             dashArray: incompleteData ? "4, 4" : "", // If the data is incomplete, the circle is dashed.
             fillColor: circleColor,
@@ -189,6 +200,27 @@ export default {
           this.circles.push(circle);
         }
       });
+    },
+
+    toggleMapOverlay() {
+      if (this.germanyMapOverlay) {
+        L.geoJSON(germanBorders, {
+          style: function (feature) {
+            return {
+              color: "#333", // Dunkelgrau für einen modernen Look
+              weight: 0, // Erhöhen Sie das Gewicht, um die Grenzen deutlicher sichtbar zu machen
+              fillColor: "blue", // Ein dezenter Grauton für die Füllung
+              fillOpacity: 0.2, // Reduzieren Sie die Fülltransparenz, um sie dezenter zu machen
+            };
+          },
+        }).addTo(this.mapInstance);
+      } else {
+        this.mapInstance.eachLayer(layer => {
+          if (layer.feature) {
+            layer.remove();
+          }
+        });
+      }
     },
 
     getColorBasedOnAirQualityIndex(airQualityIndex) {
@@ -347,6 +379,20 @@ export default {
       setTimeout(() => {
         map.invalidateSize();
       }, 100);
+
+      //removes the zoom control overlay from the map
+      map.zoomControl.remove();
+
+      L.geoJSON(germanBorders, {
+        style: function (feature) {
+          return {
+            color: "#333", // Dunkelgrau für einen modernen Look
+            weight: 0, // Erhöhen Sie das Gewicht, um die Grenzen deutlicher sichtbar zu machen
+            fillColor: "blue", // Ein dezenter Grauton für die Füllung
+            fillOpacity: 0.2, // Reduzieren Sie die Fülltransparenz, um sie dezenter zu machen
+          };
+        },
+      }).addTo(map);
 
       //finally adds the map to the data function
       this.mapInstance = map;
