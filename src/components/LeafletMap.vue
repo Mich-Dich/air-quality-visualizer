@@ -43,6 +43,7 @@ export default {
       filterOptions: { onlyInView: true, onlyOneDistrictPerCity: true },
       stationsArray: [],
       markerMap: new Map(),
+      circles: [],
     };
   },
 
@@ -110,48 +111,63 @@ export default {
     },
 
     visualizeAirQualityIndex(airQualityData) {
-      // Konvertiert die Luftqualitätsdaten in eine Map für eine schnellere Suche.
-      // Die Schlüssel der Map sind die Stations-IDs und die Werte sind die zugehörigen Luftqualitätsdaten.
+      // Removes all circles from the map to avoid duplicates.
+      this.circles.forEach(circle => {
+        circle.remove();
+      });
+
+      // Empties the array of circles.
+      this.circles = [];
+
+      // Converts the air quality data into a Map for faster lookup.
+      // The keys of the Map are the station IDs and the values are the associated air quality data.
       const airQualityMap = new Map(Object.entries(airQualityData));
 
-      // Durchläuft jede Station im Array der Stationen.
+      // Iterates over each station in the array of stations.
       this.stationsArray.forEach(station => {
-        // Konvertiert die Breiten- und Längengrade der Station in Fließkommazahlen.
+        // Converts the latitude and longitude of the station into floating point numbers.
         const latitude = parseFloat(station[8]);
         const longitude = parseFloat(station[7]);
 
-        // Holt die Luftqualitätsdaten für die aktuelle Station aus der Map.
-        // Die Stations-ID wird als Schlüssel verwendet, um die zugehörigen Luftqualitätsdaten zu finden.
+        // Retrieves the air quality data for the current station from the Map.
+        // The station ID is used as the key to find the associated air quality data.
         const stationAirQualityData = airQualityMap.get(station[0]);
 
-        // Initialisiert den Luftqualitätsindex mit null.
+        // Initializes the air quality index to null.
         let airQualityIndex = null;
 
-        // Überprüft, ob Luftqualitätsdaten für die aktuelle Station gefunden wurden.
+        // Checks if air quality data for the current station was found.
         if (stationAirQualityData) {
-          // Extrahiert das erste Luftqualitätsdatenobjekt für die aktuelle Station.
+          // Extracts the first air quality data object for the current station.
           const dataArray = Object.values(stationAirQualityData)[0];
 
-          // Setzt den Luftqualitätsindex auf den Wert des Schlüssels "1".
+          // Sets the air quality index to the value of the key "1".
           airQualityIndex = dataArray[1];
         }
 
-        // Bestimmt die Farbe des Kreises basierend auf dem Luftqualitätsindex.
+        // Determines the color of the circle based on the air quality index.
         const circleColor =
           this.getColorBasedOnAirQualityIndex(airQualityIndex);
 
-        // Zeichnet einen Kreis an der Position der Station auf der Karte.
-        // Die Farbe und Füllfarbe des Kreises basieren auf dem Luftqualitätsindex.
-        L.circle([latitude, longitude], {
+        // // filter stations with no air quality data
+        // if (airQualityIndex === null) {
+        //   return;
+        // }
+
+        // Draws a circle at the position of the station on the map.
+        // The color and fill color of the circle are based on the air quality index.
+        const circle = L.circle([latitude, longitude], {
           color: circleColor,
           fillColor: circleColor,
           fillOpacity: 0.5,
-          radius: 5500,
+          radius: 800 / Math.pow(2, this.mapInstance.getZoom() - 10),
         }).addTo(this.mapInstance);
+
+        // Stores a reference to the circle.
+        this.circles.push(circle);
       });
     },
 
-    // Hilfsfunktion, um die Farbe eines Kreises basierend auf dem Luftqualitätsindex zu bestimmen.
     getColorBasedOnAirQualityIndex(airQualityIndex) {
       switch (airQualityIndex) {
         case 0:
@@ -167,6 +183,22 @@ export default {
         default:
           return "grey";
       }
+    },
+
+    adjustCircleSizes() {
+      let currentZoom = this.mapInstance.getZoom();
+      let initialZoom = 10;
+
+      // Kreisgröße basierend auf der Zoomstufe anpassen
+      let scaleFactor = Math.pow(2, currentZoom - initialZoom);
+      let newRadius = 800 / scaleFactor;
+      console.log("Zoomstufe:", currentZoom);
+      console.log("Skalierungsfaktor:", scaleFactor);
+      console.log("Neuer Radius:", newRadius);
+
+      this.circles.forEach(circle => {
+        circle.setRadius(newRadius);
+      });
     },
 
     logInfo() {
@@ -262,6 +294,9 @@ export default {
 
       // add eventListener for when the map is moved
       map.addEventListener("moveend", this.handleMapMoved);
+
+      // add eventListener for when the map is zoomed
+      map.on("zoomend", this.adjustCircleSizes);
 
       //adds a small delay that helps with smooth page reload
       setTimeout(() => {
