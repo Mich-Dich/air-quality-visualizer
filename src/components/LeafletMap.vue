@@ -66,6 +66,7 @@ export default {
       stationsArray: [],
       markerMap: new Map(),
       circles: [],
+      marker: null,
     };
   },
 
@@ -133,6 +134,24 @@ export default {
     },
 
     visualizeAirQualityIndex() {
+      // Removes the prior marker from the map if it exists.
+      if (this.marker) {
+        this.marker.remove();
+      }
+      if (this.filterOptions.station !== null) {
+        const station = this.stationsArray.find(
+          station => station[2] === this.filterOptions.station
+        );
+        const lat = parseFloat(station[8]);
+        const lng = parseFloat(station[7]);
+        this.mapInstance.setView([lat, lng], 14, {});
+
+        this.marker = L.marker([lat, lng])
+          .addTo(this.mapInstance)
+          .bindPopup(station[2])
+          .openPopup();
+      }
+
       // Removes all circles from the map to avoid duplicates.
       this.circles.forEach(circle => {
         circle.remove();
@@ -185,20 +204,20 @@ export default {
 
         // Draws a circle at the position of the station on the map.
         // The color and fill color of the circle are based on the air quality index.
-        if (circleColor !== "grey") {
-          const circle = L.circle([latitude, longitude], {
-            color: "black",
-            weight: 1,
-            opacity: 1,
-            dashArray: incompleteData ? "4, 4" : "", // If the data is incomplete, the circle is dashed.
-            fillColor: circleColor,
-            fillOpacity: 0.5,
-            radius: 1000 / Math.pow(2, this.mapInstance.getZoom() - 10),
-          }).addTo(this.mapInstance);
+        // if (circleColor !== "grey") {
+        const circle = L.circle([latitude, longitude], {
+          color: "black",
+          weight: 1,
+          opacity: 1,
+          dashArray: incompleteData ? "4, 4" : "", // If the data is incomplete, the circle is dashed.
+          fillColor: circleColor,
+          fillOpacity: 0.5,
+          radius: 1000 / Math.pow(2, this.mapInstance.getZoom() - 10),
+        }).addTo(this.mapInstance);
 
-          // Stores a reference to the circle.
-          this.circles.push(circle);
-        }
+        // Stores a reference to the circle.
+        this.circles.push(circle);
+        // }
       });
     },
 

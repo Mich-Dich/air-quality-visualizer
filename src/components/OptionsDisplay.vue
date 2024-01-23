@@ -56,7 +56,7 @@
           v-model="filterOptions.station"
           variant="outlined"
           clearable
-          label="Stationen"
+          label="Bestimmte Station Anzeigen"
           :items="stationNames"
         ></v-autocomplete>
 
