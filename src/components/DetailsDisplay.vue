@@ -1,61 +1,74 @@
 <template>
-  <v-card class="pa-3 clipping" width="500px">
+  <v-card class="pa-3 clipping" width="auto" color="rgb(31, 31, 31)">
     <v-card-title>
       {{ show_details ? station_infos.title : generalInfos.title }}
     </v-card-title>
-    <v-card-text>
-      <!-- Displaying content based on the condition -->
-      <v-list v-if="show_details">
-        <v-list-item
-          v-for="(section, sectionIndex) in station_infos.data"
-          :key="sectionIndex"
-        >
-          <v-row>
-            <v-col
-              ><v-list-item-title style="font-size: 14px; font-weight: bold">{{
-                section.section_title
-              }}</v-list-item-title></v-col
-            >
-            <v-col><v-divider>stuff</v-divider></v-col>
-          </v-row>
+    <!-- Displaying content based on the condition -->
 
-          <v-list density="compact">
-            <v-list-item
-              v-for="(info, infoIndex) in section.section_data"
-              :key="infoIndex"
-            >
-              <v-row>
-                <v-col
-                  ><v-list-item-title>{{ info.name }}</v-list-item-title></v-col
-                >
-                <v-col
-                  ><v-list-item-subtitle>{{
-                    info.value
-                  }}</v-list-item-subtitle></v-col
-                >
-              </v-row>
-            </v-list-item>
-          </v-list>
-        </v-list-item>
-      </v-list>
+    <v-list v-if="show_details">
+      <v-list-item
+        v-for="(section, sectionIndex) in station_infos.data"
+        :key="sectionIndex"
+      >
+        <v-row>
+          <v-col
+            ><v-list-item-title style="font-size: 14px; font-weight: bold">{{
+              section.section_title
+            }}</v-list-item-title></v-col
+          >
+          <v-col><v-divider></v-divider></v-col>
+        </v-row>
 
-      <v-list v-else>
-        <v-list-item v-for="(info, index) in generalInfos.data" :key="index">
-          <v-row>
-            <v-col>
-              <v-list-item-title>{{ info.name }}</v-list-item-title>
-            </v-col>
-            <v-col>
-              <v-list-item-subtitle>{{ info.value }}</v-list-item-subtitle>
-            </v-col>
-          </v-row>
-        </v-list-item>
-      </v-list>
-    </v-card-text>
+        <v-list density="compact">
+          <v-list-item
+            v-for="(info, infoIndex) in section.section_data"
+            :key="infoIndex"
+          >
+            <v-row>
+              <v-col
+                ><v-list-item-title>{{ info.name }}</v-list-item-title></v-col
+              >
+              <v-col
+                ><v-list-item-subtitle>{{
+                  info.value
+                }}</v-list-item-subtitle></v-col
+              >
+            </v-row>
+          </v-list-item>
+        </v-list>
+      </v-list-item>
+    </v-list>
+
+    <v-list v-else bg-color="rgb(31, 31, 31)">
+      <v-list-item v-for="(info, index) in generalInfos.data" :key="index">
+        <v-row>
+          <v-col cols="1" class="mr-2">
+            <v-icon :style="{ color: info.color }">{{ info.icon }}</v-icon>
+          </v-col>
+          <v-col>
+            <v-list-item-title>{{ info.name }}</v-list-item-title>
+          </v-col>
+          <v-col align-self="center">
+            <v-list-item-subtitle class="text-right">{{
+              info.value
+            }}</v-list-item-subtitle>
+          </v-col>
+        </v-row>
+        <v-divider
+          v-if="
+            info.name === 'Vollständige Datensätze' ||
+            info.name === 'Anzahl der Datensätze'
+          "
+          class="mt-4"
+        ></v-divider>
+      </v-list-item>
+    </v-list>
   </v-card>
 </template>
 
 <script>
+import UmweltbundesamtService from "../services/UmweltbundesamtService";
+
 export default {
   // The component's name:
   name: "DetailsDisplay",
@@ -116,49 +129,72 @@ export default {
           {
             name: "Anzahl der Datensätze",
             value: Object.keys(this.airQualityData).length,
-          },
-          {
-            name: "Vollständige Datensätze",
-            value: Object.values(this.airQualityData)
-              .map(obj => Object.values(obj)[0])
-              .filter(station => station[2] === 0).length,
+            icon: "mdi-database",
+            color: "grey",
           },
           {
             name: "Unvollständige Datensätze",
             value: Object.values(this.airQualityData)
               .map(obj => Object.values(obj)[0])
               .filter(station => station[2] === 1).length,
+            icon: "mdi-circle-outline",
+            color: "blue",
           },
           {
-            name: "Kein Wert vorhanden",
+            name: "Vollständige Datensätze",
             value: Object.values(this.airQualityData)
               .map(obj => Object.values(obj)[0])
-              .filter(station => station[1] === 0).length,
+              .filter(station => station[2] === 0).length,
+            icon: "mdi-circle-outline",
+            color: "white",
           },
           {
             name: "Sehr gut",
             value: Object.values(this.airQualityData)
               .map(obj => Object.values(obj)[0])
-              .filter(station => station[1] === 1).length,
+              .filter(station => station[1] === 0).length,
+            icon: "mdi-circle",
+            color: "green",
           },
-          { name: "Gut", value: 10 },
+          {
+            name: "Gut",
+            value: Object.values(this.airQualityData)
+              .map(obj => Object.values(obj)[0])
+              .filter(station => station[1] === 1).length,
+            icon: "mdi-circle",
+            color: "yellow",
+          },
           {
             name: "Mäßig",
             value: Object.values(this.airQualityData)
               .map(obj => Object.values(obj)[0])
               .filter(station => station[1] === 2).length,
+            icon: "mdi-circle",
+            color: "orange",
           },
           {
             name: "Schlecht",
             value: Object.values(this.airQualityData)
               .map(obj => Object.values(obj)[0])
               .filter(station => station[1] === 3).length,
+            icon: "mdi-circle",
+            color: "red",
           },
           {
             name: "Sehr schlecht",
             value: Object.values(this.airQualityData)
               .map(obj => Object.values(obj)[0])
               .filter(station => station[1] === 4).length,
+            icon: "mdi-circle",
+            color: "purple",
+          },
+          {
+            name: "Keine Daten",
+            value:
+              UmweltbundesamtService.stations.length -
+              Object.keys(this.airQualityData).length,
+            icon: "mdi-circle",
+            color: "grey",
           },
         ],
       };
