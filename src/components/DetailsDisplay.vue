@@ -67,6 +67,10 @@ export default {
     },
   },
 
+  mounted() {
+    console.log(this.generalInfos.data[1].value);
+  },
+
   data() {
     return {
       show_details: false, // Change this condition based on your logic
@@ -101,14 +105,6 @@ export default {
           },
         ],
       },
-      general_infos: {
-        title: "Meta Informationen zur Abfrage",
-        data: [
-          { name: "Stations number", value: 42 },
-          { name: "", value: 25 },
-          { name: "CO", value: 10 },
-        ],
-      },
     };
   },
 
@@ -122,17 +118,54 @@ export default {
             value: Object.keys(this.airQualityData).length,
           },
           {
+            name: "Vollständige Datensätze",
+            value: Object.values(this.airQualityData)
+              .map(obj => Object.values(obj)[0])
+              .filter(station => station[2] === 0).length,
+          },
+          {
+            name: "Unvollständige Datensätze",
+            value: Object.values(this.airQualityData)
+              .map(obj => Object.values(obj)[0])
+              .filter(station => station[2] === 1).length,
+          },
+          {
+            name: "Kein Wert vorhanden",
+            value: Object.values(this.airQualityData)
+              .map(obj => Object.values(obj)[0])
+              .filter(station => station[1] === 0).length,
+          },
+          {
             name: "Sehr gut",
-            value: 3,
+            value: Object.values(this.airQualityData)
+              .map(obj => Object.values(obj)[0])
+              .filter(station => station[1] === 1).length,
           },
           { name: "Gut", value: 10 },
-          { name: "Mäßig", value: 5 },
-          { name: "Schlecht", value: 2 },
-          { name: "Sehr schlecht", value: 1 },
+          {
+            name: "Mäßig",
+            value: Object.values(this.airQualityData)
+              .map(obj => Object.values(obj)[0])
+              .filter(station => station[1] === 2).length,
+          },
+          {
+            name: "Schlecht",
+            value: Object.values(this.airQualityData)
+              .map(obj => Object.values(obj)[0])
+              .filter(station => station[1] === 3).length,
+          },
+          {
+            name: "Sehr schlecht",
+            value: Object.values(this.airQualityData)
+              .map(obj => Object.values(obj)[0])
+              .filter(station => station[1] === 4).length,
+          },
         ],
       };
     },
   },
+
+  methods: {},
 };
 </script>
 
