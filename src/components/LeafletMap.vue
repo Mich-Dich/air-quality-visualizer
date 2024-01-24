@@ -206,8 +206,8 @@ export default {
         // The color and fill color of the circle are based on the air quality index.
         // if (circleColor !== "grey") {
         const circle = L.circle([latitude, longitude], {
-          color: "rgb(0, 0, 128)",
-          weight: incompleteData ? 0 : 1.2,
+          color: incompleteData ? "grey" : "rgb(0, 0, 128)",
+          weight: 1,
           opacity: 1,
           fillColor: circleColor,
           fillOpacity: 1,

@@ -127,6 +127,12 @@ export default {
         title: "Luftqualitätsdaten",
         data: [
           {
+            name: "Anzahl der Stationen",
+            value: UmweltbundesamtService.stations.length,
+            icon: "mdi-map-marker",
+            color: "grey",
+          },
+          {
             name: "Anzahl der Datensätze",
             value: Object.keys(this.airQualityData).length,
             icon: "mdi-database",
@@ -146,7 +152,7 @@ export default {
               .map(obj => Object.values(obj)[0])
               .filter(station => station[2] === 0).length,
             icon: "mdi-circle-outline",
-            color: "white",
+            color: "grey",
           },
           {
             name: "Sehr gut",
