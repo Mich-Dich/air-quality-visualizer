@@ -1,28 +1,49 @@
 <template>
   <v-card
     class="pa-3"
-    :title="title"
     :subtitle="subtitle"
-    max-width="550px"
+    max-width="5000px"
     height="auto"
     color="rgb(31, 31, 31)"
   >
-    <Slider></Slider>
-    <v-container></v-container>
+    <v-container>
+      <v-row>
+        <v-col cols="12" md="7">
+          <v-range-slider
+            track-color="transparent"
+            track-fill-color="gray"
+          ></v-range-slider>
+        </v-col>
+        <v-col
+          cols="12"
+          md="1"
+          v-for="(item, index) in legendItems"
+          :key="index"
+          class="icon-item"
+        >
+          <v-icon :style="{ color: item.color }">mdi-circle</v-icon>
+          <span>{{ item.text }}</span>
+        </v-col>
+      </v-row>
+    </v-container>
   </v-card>
-  <!--Slider-->
 </template>
 
 <script>
+import Slider from "./Slider.vue";
+import Slider from "./Slider.vue";
 export default {
   // The component's name:
-  name: "DetailsDisplay",
-
+  name: "BottomBar",
   data() {
     return {
-      title: "Air Pollution Details",
+      title: "Slider",
       subtitle: "",
       tab: null,
+
+      // Slider
+      min_value: 0,
+      max_value: 0,
 
       luftqualitaetsdaten: [
         { name: "Sehr gut", airQualityIndex: 0 },
@@ -61,6 +82,7 @@ export default {
       }
     },
   },
+  components: { Slider },
 };
 </script>
 
