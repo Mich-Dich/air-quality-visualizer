@@ -7,11 +7,10 @@
     height="auto"
     color="rgb(31, 31, 31)"
   >
-    <v-window v-model="tab">
-      <!-- Ansicht Luftqualität -->
-      <v-window-item value="one"> </v-window-item>
-    </v-window>
+    <Slider></Slider>
+    <v-container></v-container>
   </v-card>
+  <!--Slider-->
 </template>
 
 <script>
@@ -65,14 +64,4 @@ export default {
 };
 </script>
 
-<style>
-.icon-item {
-  display: flex;
-  align-items: center;
-  margin-right: 0px;
-}
-
-.icon-item v-icon {
-  margin-right: 5px;
-}
-</style>
+<style scoped></style>

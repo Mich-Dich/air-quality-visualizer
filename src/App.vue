@@ -14,7 +14,7 @@
         @airQualityDataFetched="handleAirQualityDataChanged"
         @filtersChanged="handleFiltersChanged"
       />
-      <Slider class="slider-position" />
+      <BottomBar class="bottom-bar-position" />
       <v-btn
         @click="this.germanyMapOverlay = !this.germanyMapOverlay"
         class="toggle-borders-button"
@@ -35,11 +35,11 @@ import Navbar from "./components/Navbar.vue";
 import LeafletMap from "./components/LeafletMap.vue";
 import DetailsDisplay from "./components/DetailsDisplay.vue";
 import OptionsDisplay from "./components/OptionsDisplay.vue";
-import Slider from "./components/Slider.vue";
+import BottomBar from "./components/BottomBar.vue";
 
 export default {
   name: "App",
-  components: { Navbar, LeafletMap, DetailsDisplay, OptionsDisplay, Slider },
+  components: { Navbar, LeafletMap, DetailsDisplay, OptionsDisplay, BottomBar },
   data() {
     return {
       airQualityData: null,
@@ -84,10 +84,10 @@ export default {
   z-index: 1000;
 }
 
-.slider-position {
+.bottom-bar-position {
   position: absolute;
-  bottom: 0;
-  left: 0;
+  bottom: 20px;
+  left: 20px;
   z-index: 1000;
 }
 
