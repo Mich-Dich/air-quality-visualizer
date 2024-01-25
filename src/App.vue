@@ -14,7 +14,10 @@
         @airQualityDataFetched="handleAirQualityDataChanged"
         @filtersChanged="handleFiltersChanged"
       />
-      <BottomBar class="bottom-bar-position" />
+      <BottomBar
+        class="bottom-bar-position"
+        @selectedAirQualityIndicesArray="handleSelectedAirQualityIndices"
+      />
       <v-btn
         @click="this.germanyMapOverlay = !this.germanyMapOverlay"
         class="toggle-borders-button"
@@ -61,6 +64,8 @@ export default {
       console.log("filter changed", filterOptions);
       this.filterOptions = filterOptions;
     },
+
+    handleSelectedAirQualityIndices(selectedAirQualityIndicesArray) {},
   },
 };
 </script>
@@ -86,8 +91,8 @@ export default {
 
 .bottom-bar-position {
   position: absolute;
-  bottom: 20px;
-  left: 20px;
+  bottom: 20px !important;
+  left: 20px !important;
   z-index: 1000;
 }
 

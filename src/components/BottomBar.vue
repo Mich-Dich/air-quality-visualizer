@@ -1,28 +1,26 @@
 <template>
-  <v-card
-    class="pa-3"
-    :subtitle="subtitle"
-    max-width="5000px"
-    height="auto"
-    color="rgb(31, 31, 31)"
-  >
-    <v-container>
-      <v-row>
-        <v-col cols="12" md="7">
-          <v-range-slider
-            track-color="transparent"
-            track-fill-color="gray"
-          ></v-range-slider>
-        </v-col>
+  <v-card min-width="40vw" height="auto" color="rgb(31, 31, 31)">
+    <v-container class="pa-2 custom-box">
+      <v-container class="custom-container"
+        ><v-range-slider
+          track-color="transparent"
+          track-fill-color="gray"
+          v-model:model-value="currentThumbsArray"
+          min="0"
+          max="4"
+          :step="1"
+          :strict="true"
+        ></v-range-slider>
+      </v-container>
+      <v-row justify="space-between">
         <v-col
-          cols="12"
-          md="1"
-          v-for="(item, index) in legendItems"
-          :key="index"
-          class="icon-item"
+          class="ma-2 pa-0 pt-2 custom-button d-flex justify-center align-center"
+          v-for="item in legendItems()"
+          :key="item.text"
         >
-          <v-icon :style="{ color: item.color }">mdi-circle</v-icon>
-          <span>{{ item.text }}</span>
+          <v-chip width="13ch" variant="text" :color="item.color">{{
+            item.text
+          }}</v-chip>
         </v-col>
       </v-row>
     </v-container>
@@ -30,60 +28,98 @@
 </template>
 
 <script>
-import Slider from "./Slider.vue";
-import Slider from "./Slider.vue";
 export default {
   // The component's name:
   name: "BottomBar",
+
+  emits: ["selectedAirQualityIndicesArray"],
+
   data() {
     return {
-      title: "Slider",
+      title: "Set Air Pollution Range",
       subtitle: "",
-      tab: null,
+      tab: null, //brauchen wir das?
 
-      // Slider
-      min_value: 0,
-      max_value: 0,
+      currentThumbsArray: [0, 4],
+      selectedAirQualityIndexArray: null,
 
-      luftqualitaetsdaten: [
-        { name: "Sehr gut", airQualityIndex: 0 },
-        { name: "Gut", airQualityIndex: 1 },
-        { name: "Mittel", airQualityIndex: 2 },
-        { name: "Schlecht", airQualityIndex: 3 },
-        { name: "Sehr schlecht", airQualityIndex: 4 },
-        { name: "Keine Angabe", airQualityIndex: 5 },
-      ],
+      luftqualitaetsdaten: {
+        0: "Sehr gut",
+        1: "Gut",
+        2: "Mittel",
+        3: "Schlecht",
+        4: "Sehr schlecht",
+      },
     };
   },
-  computed: {
+
+  watch: {
+    currentThumbsArray: function (newValues, oldValues) {
+      this.handleThumbsArrayChange();
+    },
+  },
+
+  methods: {
     legendItems() {
-      // Erstelle ein Array von Objekten für die Legende
-      return this.luftqualitaetsdaten.map((luftqualitaetsdaten) => ({
-        text: luftqualitaetsdaten.name,
-        color: this.getColorBasedOnValue(luftqualitaetsdaten.airQualityIndex),
+      return Object.keys(this.luftqualitaetsdaten).map((index) => ({
+        text: this.luftqualitaetsdaten[index],
+        color: this.getColorBasedOnIndex(index),
       }));
     },
-  },
-  methods: {
+    getColorBasedOnIndex(index) {
+      const colors = ["green", "yellow", "orange", "red", "purple", "grey"];
+      return colors[index] || "grey"; // Default: "grey", falls der Index nicht übereinstimmt
+    },
     getColorBasedOnValue(airQualityIndex) {
-      switch (airQualityIndex) {
-        case 0:
-          return "green";
-        case 1:
-          return "yellow";
-        case 2:
-          return "orange";
-        case 3:
-          return "red";
-        case 4:
-          return "purple";
-        default:
-          return "grey";
-      }
+      return this.getColorBasedOnIndex(airQualityIndex);
+    },
+    handleThumbsArrayChange() {
+      const lower = parseInt(this.currentThumbsArray[0]);
+      const upper = parseInt(this.currentThumbsArray[1]);
+
+      this.selectedAirQualityIndexArray = Array.from(
+        { length: upper - lower + 1 },
+        (_, index) => lower + index
+      );
+      console.log(
+        "selectedAirQualityIndexArray",
+        this.selectedAirQualityIndexArray
+      );
+      this.$emit(
+        "selectedAirQualityIndicesArray",
+        this.selectedAirQualityIndexArray
+      );
     },
   },
-  components: { Slider },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.custom-container {
+  clip-path: polygon(
+    10px 0,
+    100% 0,
+    100% calc(100% - 10px),
+    calc(100% - 10px) 100%,
+    0 100%,
+    0 10px
+  );
+  padding: 0px;
+  padding-left: 10px;
+  padding-right: 10px;
+  width: calc(100% -20px);
+  height: 30px;
+  background: linear-gradient(
+    to right,
+    rgb(0, 128, 0),
+    rgb(255, 255, 0),
+    rgb(255, 165, 0),
+    rgb(255, 0, 0),
+    rgb(128, 0, 128)
+  );
+}
+
+.custom-box {
+  position: relative;
+}
+</style>

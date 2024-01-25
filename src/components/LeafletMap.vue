@@ -23,12 +23,16 @@ export default {
     germanyMapOverlay: {
       type: Boolean,
     },
+    // selectedAirQualityIndicesArray: {
+    //   type: Array,
+    // },
   },
 
   watch: {
     filterOptions: {
       handler() {
         this.visualizeAirQualityIndex();
+        this.toggleMapOverlay();
       },
       deep: true,
     },
@@ -67,6 +71,8 @@ export default {
       markerMap: new Map(),
       circles: [],
       marker: null,
+
+      geoJsonNetworkData: null,
     };
   },
 
@@ -94,7 +100,7 @@ export default {
     },
 
     addAllMarkers() {
-      this.stationsArray.forEach(station => {
+      this.stationsArray.forEach((station) => {
         const marker = L.marker([
           parseFloat(station[8]),
           parseFloat(station[7]),
@@ -106,7 +112,7 @@ export default {
 
     updateMarkers() {
       // Durchläuft jedes Element im stationsArray.
-      this.stationsArray.forEach(station => {
+      this.stationsArray.forEach((station) => {
         // Konvertiert die Breiten- und Längengrade der Station in Fließkommazahlen.
         const lat = parseFloat(station[8]);
         const lng = parseFloat(station[7]);
@@ -140,7 +146,7 @@ export default {
       }
       if (this.filterOptions.station !== null) {
         const station = this.stationsArray.find(
-          station => station[2] === this.filterOptions.station
+          (station) => station[2] === this.filterOptions.station
         );
         const lat = parseFloat(station[8]);
         const lng = parseFloat(station[7]);
@@ -153,7 +159,7 @@ export default {
       }
 
       // Removes all circles from the map to avoid duplicates.
-      this.circles.forEach(circle => {
+      this.circles.forEach((circle) => {
         circle.remove();
       });
 
@@ -173,7 +179,7 @@ export default {
       // const filteredStations = this.stationsArray;
 
       // Iterates over each station in the array of filtered stations.
-      filteredStations.forEach(station => {
+      filteredStations.forEach((station) => {
         // Converts the latitude and longitude of the station into floating point numbers.
         const latitude = parseFloat(station[8]);
         const longitude = parseFloat(station[7]);
@@ -221,25 +227,66 @@ export default {
       });
     },
 
-    toggleMapOverlay() {
-      if (this.germanyMapOverlay) {
-        L.geoJSON(germanBorders, {
-          style: function (feature) {
-            return {
-              color: "#333", // Dunkelgrau für einen modernen Look
-              weight: 0, // Erhöhen Sie das Gewicht, um die Grenzen deutlicher sichtbar zu machen
-              fillColor: "blue", // Ein dezenter Grauton für die Füllung
-              fillOpacity: 0.2, // Reduzieren Sie die Fülltransparenz, um sie dezenter zu machen
-            };
-          },
-        }).addTo(this.mapInstance);
+    //erstellt objekt mit alle Bundesländern als keys und den zugehörigen Koordinaten als values
+    getGeoJsonBordersForNetworks(network) {
+      const feature = germanBorders.features.find(
+        (feature) => feature.properties.GEN === network
+      );
+
+      if (feature) {
+        return {
+          type: "FeatureCollection",
+          features: [feature],
+        };
       } else {
-        this.mapInstance.eachLayer(layer => {
+        console.log(`Bundesland "${network}" nicht gefunden.`);
+        return null;
+      }
+    },
+
+    toggleMapOverlay() {
+      let network = this.filterOptions.network;
+
+      const geoJsonData = this.getGeoJsonBordersForNetworks(network);
+
+      if (network) {
+        if (this.germanyMapOverlay) {
+          this.mapInstance.eachLayer((layer) => {
+            if (layer.feature) {
+              layer.remove();
+            }
+          });
+        }
+        this.addGeoJsonDataToMap(geoJsonData);
+      } else if (this.germanyMapOverlay) {
+        if (network) {
+          this.mapInstance.eachLayer((layer) => {
+            if (layer.feature) {
+              layer.remove();
+            }
+          });
+        }
+        this.addGeoJsonDataToMap(germanBorders);
+      } else {
+        this.mapInstance.eachLayer((layer) => {
           if (layer.feature) {
             layer.remove();
           }
         });
       }
+    },
+
+    addGeoJsonDataToMap(geoJsonData) {
+      L.geoJSON(geoJsonData, {
+        style: function (feature) {
+          return {
+            color: "#333",
+            weight: 0,
+            fillColor: "blue",
+            fillOpacity: 0.2,
+          };
+        },
+      }).addTo(this.mapInstance);
     },
 
     getColorBasedOnAirQualityIndex(airQualityIndex) {
@@ -270,7 +317,7 @@ export default {
       console.log("Skalierungsfaktor:", scaleFactor);
       console.log("Neuer Radius:", newRadius);
 
-      this.circles.forEach(circle => {
+      this.circles.forEach((circle) => {
         circle.setRadius(newRadius);
       });
     },
@@ -278,13 +325,19 @@ export default {
     filterStations() {
       let filteredStations = this.stationsArray;
       let stationTypesArray = Array.from(this.filterOptions.stationTypes).map(
-        type => type.toString()
+        (type) => type.toString()
       );
       let stationSettings = Array.from(this.filterOptions.stationSettings).map(
-        setting => setting.toString()
+        (setting) => setting.toString()
       );
 
-      filteredStations = filteredStations.filter(station => {
+      const airQualityIndex = Object.values(this.airQualityData)
+        .map((obj) => Object.values(obj)[0])
+        .map((station) => station[1]);
+
+      console.log("airQualityIndex", airQualityIndex);
+
+      filteredStations = filteredStations.filter((station) => {
         if (stationTypesArray.includes(station[11].toString()) == false) {
           return false;
         } else if (stationSettings.includes(station[10].toString()) == false) {
@@ -315,7 +368,7 @@ export default {
     },
 
     addMarkersToCities(citiesArray) {
-      citiesArray.forEach(city => {
+      citiesArray.forEach((city) => {
         const marker = L.marker([city.Breitengrad, city.Längengrad])
           .addTo(this.mapInstance)
           .bindPopup(city.Ort);
@@ -342,7 +395,7 @@ export default {
 
       //filters out cities that are not in the viewable window
       if (onlyInView) {
-        filteredCities = filteredCities.filter(city => {
+        filteredCities = filteredCities.filter((city) => {
           return (
             city.Breitengrad <= this.currentMapBounds.A.lat &&
             city.Breitengrad >= this.currentMapBounds.D.lat &&
@@ -355,7 +408,7 @@ export default {
       // filters out duplicate cities with different postal codes
       if (onlyOneDistrictPerCity) {
         const uniqueCities = {};
-        filteredCities = filteredCities.filter(city => {
+        filteredCities = filteredCities.filter((city) => {
           if (!uniqueCities[city.Ort]) {
             uniqueCities[city.Ort] = true;
             return true;
