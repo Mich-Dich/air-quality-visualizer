@@ -329,8 +329,8 @@ export default {
 
   data() {
     return {
-      title: "Set your options",
-      subtitle: "configure what data you want to get visualized",
+      title: "Filter",
+      subtitle: "Konfigurieren Sie die Filter um Messdaten einzugrenzen",
       tab: null,
       // members of UmweltbundesamtService
       stations: [],
@@ -379,20 +379,20 @@ export default {
       this.transgressionTypes = UmweltbundesamtService.transgressionTypes;
     },
     extractInputValues() {
-      this.componentNames = this.components.map(component => component[4]);
-      this.scopeNames = this.scopes.map(scope => scope[5]);
-      this.stationNames = this.stations.map(station => station[2]);
+      this.componentNames = this.components.map((component) => component[4]);
+      this.scopeNames = this.scopes.map((scope) => scope[5]);
+      this.stationNames = this.stations.map((station) => station[2]);
       this.networkNames = this.networks
-        .map(network => network[2])
-        .filter(network => network !== "UBA");
+        .map((network) => network[2])
+        .filter((network) => network !== "UBA");
       this.stationSettingNames = this.stationSettings.map(
-        stationSetting => stationSetting[1]
+        (stationSetting) => stationSetting[1]
       );
       this.stationTypeNames = this.stationTypes.map(
-        stationType => stationType[1]
+        (stationType) => stationType[1]
       );
       this.transgressionNames = this.transgressionTypes.map(
-        transgression => transgression[1]
+        (transgression) => transgression[1]
       );
     },
     setChipGroupValues() {
