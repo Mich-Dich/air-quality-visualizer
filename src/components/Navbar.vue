@@ -1,14 +1,3 @@
-<style>
-a {
-  text-decoration: none;
-  color: inherit;
-}
-
-a:focus {
-  color: inherit;
-}
-</style>
-
 <template>
   <nav>
     <v-toolbar app color="rgb(31, 31, 31)">
@@ -30,3 +19,14 @@ a:focus {
 <script>
 export default {};
 </script>
+
+<style>
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a:focus {
+  color: inherit;
+}
+</style>
