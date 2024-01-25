@@ -1,5 +1,5 @@
 <template>
-  <v-card min-width="50vw" height="auto" color="rgb(31, 31, 31)">
+  <v-card min-width="800px" height="auto" color="rgb(31, 31, 31)">
     <v-container class="pa-2 custom-box">
       <v-row>
         <!-- Erste Spalte: Slider und Chips -->
@@ -18,7 +18,7 @@
           </v-container>
         </v-col>
 
-        <v-col cols="4" class="ma-0">
+        <v-col cols="4" class="ma-0 text-end">
           <v-btn
             large
             @click="this.isEmptyDataMarker = !this.isEmptyDataMarker"
@@ -75,7 +75,7 @@ export default {
 
   methods: {
     legendItems() {
-      return Object.keys(this.luftqualitaetsdaten).map((index) => ({
+      return Object.keys(this.luftqualitaetsdaten).map(index => ({
         text: this.luftqualitaetsdaten[index],
         color: this.getColorBasedOnIndex(index),
       }));
