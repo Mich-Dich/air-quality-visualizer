@@ -1,9 +1,9 @@
 <template>
-  <v-card min-width="40vw" height="auto" color="rgb(31, 31, 31)">
+  <v-card min-width="50vw" height="auto" color="rgb(31, 31, 31)">
     <v-container class="pa-2 custom-box">
       <v-row>
         <!-- Erste Spalte: Slider und Chips -->
-        <v-col cols="8">
+        <v-col cols="8" align-self="center">
           <v-container class="custom-container">
             <v-range-slider
               track-color="transparent"
@@ -15,18 +15,6 @@
               :strict="true"
               @end="handleThumbsArrayChange"
             ></v-range-slider>
-
-            <v-row justify="space-between">
-              <v-col
-                class="ma-2 pa-0 pt-2 custom-button d-flex justify-center align-center"
-                v-for="item in legendItems"
-                :key="item.text"
-              >
-                <v-chip width="13ch" variant="text" :color="item.color">{{
-                  item.text
-                }}</v-chip>
-              </v-col>
-            </v-row>
           </v-container>
         </v-col>
 
