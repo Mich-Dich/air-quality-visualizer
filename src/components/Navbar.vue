@@ -1,6 +1,12 @@
 <template>
   <nav>
     <v-toolbar app color="rgb(31, 31, 31)">
+      <v-img
+        max-width="35px"
+        class="ml-6"
+        src="../assets/logo.png"
+        alt="Logo"
+      />
       <v-toolbar-title class="text-uppercase">
         <span class="font-weight-light"> Airquality </span>
         <span class="font-weight-bold text-primary title"> Visualizer </span>
