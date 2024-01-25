@@ -10,6 +10,7 @@ import { fileURLToPath, URL } from "node:url";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: "/air-quality-visualizer/",
   plugins: [
     Vue({
       template: { transformAssetUrls },
