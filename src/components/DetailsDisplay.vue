@@ -119,6 +119,40 @@ export default {
 
   computed: {
     generalInfos() {
+      let incompleteDataCount = 0;
+      let completeDataCount = 0;
+      let veryGoodCount = 0;
+      let goodCount = 0;
+      let moderateCount = 0;
+      let badCount = 0;
+      let veryBadCount = 0;
+
+      this.airQualityData.forEach((stationData, stationId) => {
+        if (stationData[2] === 1) {
+          incompleteDataCount++;
+        } else if (stationData[2] === 0) {
+          completeDataCount++;
+        }
+
+        switch (stationData[1]) {
+          case 0:
+            veryGoodCount++;
+            break;
+          case 1:
+            goodCount++;
+            break;
+          case 2:
+            moderateCount++;
+            break;
+          case 3:
+            badCount++;
+            break;
+          case 4:
+            veryBadCount++;
+            break;
+        }
+      });
+
       return {
         title: "Luftqualitätsdaten",
         data: [
@@ -130,64 +164,56 @@ export default {
           },
           {
             name: "Anzahl der Datensätze",
-            value: Object.keys(this.airQualityData).length,
+            value: this.airQualityData.size,
             icon: "mdi-database",
             color: "grey",
           },
           {
             name: "Unvollständige Datensätze",
-            value: this.airQualityData.filter(station => station[2] === 1)
-              .length,
+            value: incompleteDataCount,
             icon: "mdi-circle-outline",
             color: "blue",
           },
           {
             name: "Vollständige Datensätze",
-            value: this.airQualityData.filter(station => station[2] === 0)
-              .length,
+            value: completeDataCount,
             icon: "mdi-circle-outline",
             color: "grey",
           },
           {
             name: "Sehr gut",
-            value: this.airQualityData.filter(station => station[1] === 0)
-              .length,
+            value: veryGoodCount,
             icon: "mdi-circle",
             color: "green",
           },
           {
             name: "Gut",
-            value: this.airQualityData.filter(station => station[1] === 1)
-              .length,
+            value: goodCount,
             icon: "mdi-circle",
             color: "yellow",
           },
           {
             name: "Mäßig",
-            value: this.airQualityData.filter(station => station[1] === 2)
-              .length,
+            value: moderateCount,
             icon: "mdi-circle",
             color: "orange",
           },
           {
             name: "Schlecht",
-            value: this.airQualityData.filter(station => station[1] === 3)
-              .length,
+            value: badCount,
             icon: "mdi-circle",
             color: "red",
           },
           {
             name: "Sehr schlecht",
-            value: this.airQualityData.filter(station => station[1] === 4)
-              .length,
+            value: veryBadCount,
             icon: "mdi-circle",
             color: "purple",
           },
           {
             name: "Keine Daten",
             value:
-              UmweltbundesamtService.stations.length -
-              this.airQualityData.length,
+              UmweltbundesamtService.stations.length - this.airQualityData.size,
             icon: "mdi-circle",
             color: "grey",
           },

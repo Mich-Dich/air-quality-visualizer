@@ -78,12 +78,12 @@ export default {
         Bayern: [48.7904, 11.4979, 7.5],
         Berlin: [52.5167, 13.3833, 11],
         Brandenburg: [52.4125, 12.5316, 8],
-        Bremen: [53.1153, 8.7973, 4],
-        Hamburg: [53.5503, 9.9937, 2],
+        Bremen: [53.1153, 8.7973, 11],
+        Hamburg: [53.5503, 9.9937, 11],
         Hessen: [50.6521, 9.1624, 8],
-        "Mecklenburg-Vorpommern": [53.6127, 12.4296, 8.5],
+        "Mecklenburg-Vorpommern": [53.6127, 12.4296, 8],
         Niedersachsen: [52.6367, 9.8451, 8],
-        "Nordrhein-Westfalen": [51.4333, 7.2667, 8.5],
+        "Nordrhein-Westfalen": [51.4333, 7.2667, 8],
         "Rheinland-Pfalz": [49.9131, 7.4518, 8.5],
         Saarland: [49.3964, 6.7562, 10],
         Sachsen: [51.0493, 13.7384, 8.5],
@@ -99,9 +99,6 @@ export default {
     await UmweltbundesamtService.fetchAndStoreAllData("de", "code");
     // UmweltbundesamtService.logAllMembers();
     this.stationsArray = UmweltbundesamtService.stations;
-    // this.getCurrentMapBounds();
-    // this.updateMarkers();
-    // this.addAllMarkers();
   },
 
   beforeUnmount() {
@@ -113,52 +110,49 @@ export default {
   methods: {
     visualizeAirQualityIndex() {
       // Removes the prior marker from the map if it exists.
-      if (this.marker) {
-        this.marker.remove();
-      }
+      this.marker?.remove();
+
       if (this.filterOptions.station !== null) {
         const station = this.stationsArray.find(
           station => station[2] === this.filterOptions.station
         );
-        const lat = parseFloat(station[8]);
-        const lng = parseFloat(station[7]);
-        this.mapInstance.setView([lat, lng], 14, {});
 
-        this.marker = L.marker([lat, lng])
-          .addTo(this.mapInstance)
-          .bindPopup(station[2])
-          .openPopup();
+        if (station) {
+          const lat = station[8];
+          const lng = station[7];
+          this.mapInstance.setView([lat, lng], 14, {});
+
+          this.marker = L.marker([lat, lng])
+            .addTo(this.mapInstance)
+            .bindPopup(station[2])
+            .openPopup();
+        }
       }
 
       // Removes all circles from the map and empties the array of circles.
-      this.circles = this.circles.filter(circle => {
-        circle.remove();
-        return false;
-      });
+      this.circles.forEach(circle => circle.remove());
+      this.circles = [];
 
       if (!this.airQualityData) {
         return;
       }
 
-      // Converts the air quality data into a Map for faster lookup.
-      const airQualityMap = new Map(
-        this.airQualityData.map(item => [item[0], item])
-      );
-
       // Filter stations based on the filterOptions prop
       const filteredStations = this.filterStations();
 
+      // Calculate the radius once before the loop
+      const radius = 1000 / Math.pow(2, this.mapInstance.getZoom() - 10);
+
       // Iterates over each station in the array of filtered stations.
       filteredStations.forEach(station => {
-        // Converts the latitude and longitude of the station into floating point numbers.
-        const latitude = parseFloat(station[8]);
-        const longitude = parseFloat(station[7]);
+        const latitude = station[8];
+        const longitude = station[7];
 
         // Finds the air quality data for the station.
-        let airQualityDataForStation = airQualityMap.get(station[0].toString());
-        if (airQualityDataForStation === undefined) {
-          airQualityDataForStation = [0, -1, 0];
-        }
+        const airQualityDataForStation = this.airQualityData.get(
+          station[0]
+        ) ?? [0, -1, 0];
+
         const airQualityIndex = airQualityDataForStation[1];
         const incompleteData = airQualityDataForStation[2] === 1;
 
@@ -173,14 +167,13 @@ export default {
           opacity: 1,
           fillColor: circleColor,
           fillOpacity: 1,
-          radius: 1000 / Math.pow(2, this.mapInstance.getZoom() - 10),
+          radius: radius,
         }).addTo(this.mapInstance);
 
         // Stores a reference to the circle.
         this.circles.push(circle);
       });
     },
-
     setViewToNetwork(networkCentralCoordinates) {
       this.mapInstance.setView(
         [networkCentralCoordinates[0], networkCentralCoordinates[1]],
@@ -233,40 +226,65 @@ export default {
     },
 
     toggleMapOverlay() {
-      let network = this.filterOptions.network;
+      const network = this.filterOptions.network;
 
-      const geoJsonData = this.getGeoJsonBordersForNetworks(network);
+      // Entfernen Sie alle Layer, die ein Feature haben
+      this.mapInstance.eachLayer(layer => {
+        if (layer.feature) {
+          layer.remove();
+        }
+      });
 
+      // Wenn ein Netzwerk ausgewählt ist, fügen Sie die GeoJson-Daten für dieses Netzwerk hinzu
       if (network) {
-        if (this.germanyMapOverlay) {
-          this.mapInstance.eachLayer(layer => {
-            if (layer.feature) {
-              layer.remove();
-            }
-          });
-        }
+        const geoJsonData = this.getGeoJsonBordersForNetworks(network);
         this.addGeoJsonDataToMap(geoJsonData);
-
         this.setViewToNetwork(this.networkCentralCoordinates[network]);
-        this.reAddCirclesToMap();
-      } else if (this.germanyMapOverlay) {
-        if (network) {
-          this.mapInstance.eachLayer(layer => {
-            if (layer.feature) {
-              layer.remove();
-            }
-          });
-        }
-        this.addGeoJsonDataToMap(germanBorders);
-        this.reAddCirclesToMap();
-      } else {
-        this.mapInstance.eachLayer(layer => {
-          if (layer.feature) {
-            layer.remove();
-          }
-        });
       }
+      // Wenn kein Netzwerk ausgewählt ist, aber die Deutschlandkarte Overlay aktiv ist, fügen Sie die deutschen Grenzen hinzu
+      else if (this.germanyMapOverlay) {
+        this.addGeoJsonDataToMap(germanBorders);
+      }
+
+      // Fügen Sie die Kreise zur Karte hinzu
+      this.reAddCirclesToMap();
     },
+
+    // toggleMapOverlay() {
+    //   let network = this.filterOptions.network;
+
+    //   const geoJsonData = this.getGeoJsonBordersForNetworks(network);
+
+    //   if (network) {
+    //     if (this.germanyMapOverlay) {
+    //       this.mapInstance.eachLayer(layer => {
+    //         if (layer.feature) {
+    //           layer.remove();
+    //         }
+    //       });
+    //     }
+    //     this.addGeoJsonDataToMap(geoJsonData);
+
+    //     this.setViewToNetwork(this.networkCentralCoordinates[network]);
+    //     this.reAddCirclesToMap();
+    //   } else if (this.germanyMapOverlay) {
+    //     if (network) {
+    //       this.mapInstance.eachLayer(layer => {
+    //         if (layer.feature) {
+    //           layer.remove();
+    //         }
+    //       });
+    //     }
+    //     this.addGeoJsonDataToMap(germanBorders);
+    //     this.reAddCirclesToMap();
+    //   } else {
+    //     this.mapInstance.eachLayer(layer => {
+    //       if (layer.feature) {
+    //         layer.remove();
+    //       }
+    //     });
+    //   }
+    // },
 
     getColorBasedOnAirQualityIndex(airQualityIndex) {
       switch (airQualityIndex) {

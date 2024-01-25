@@ -382,7 +382,9 @@ export default {
       this.componentNames = this.components.map(component => component[4]);
       this.scopeNames = this.scopes.map(scope => scope[5]);
       this.stationNames = this.stations.map(station => station[2]);
-      this.networkNames = this.networks.map(network => network[2]);
+      this.networkNames = this.networks
+        .map(network => network[2])
+        .filter(network => network !== "UBA");
       this.stationSettingNames = this.stationSettings.map(
         stationSetting => stationSetting[1]
       );
@@ -455,15 +457,13 @@ export default {
       // unpacking airQualityData
       airQualityData = airQualityData.data.data;
 
-      airQualityData = Object.values(airQualityData).map(obj => {
-        let key = Object.keys(airQualityData).find(
-          key => airQualityData[key] === obj
-        );
-        let values = Object.values(obj);
-        values[0][0] = key;
-        return values[0];
-      });
-
+      airQualityData = new Map(
+        Object.entries(airQualityData).map(([key, obj]) => {
+          let values = Object.values(obj)[0];
+          return [key, values];
+        })
+      );
+      console.log(airQualityData);
       // emit the data to App.vue
       this.$emit("airQualityDataFetched", airQualityData);
     },

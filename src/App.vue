@@ -28,7 +28,7 @@
         variant="elevated"
         color="primary"
         size="large"
-        :disabled="filterOptions.network"
+        :disabled="this.filterOptions.network !== null"
       >
         <v-icon>mdi mdi-map-outline</v-icon>
         <span v-if="germanyMapOverlay">Deutschland Overlay ausblenden</span>
