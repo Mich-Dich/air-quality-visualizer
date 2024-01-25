@@ -73,6 +73,24 @@ export default {
       marker: null,
 
       geoJsonNetworkData: null,
+      networkCentralCoordinates: {
+        "Baden-Württemberg": [48.6616, 9.3501, 8],
+        Bayern: [48.7904, 11.4979, 7.5],
+        Berlin: [52.5167, 13.3833, 11],
+        Brandenburg: [52.4125, 12.5316, 8],
+        Bremen: [53.1153, 8.7973, 4],
+        Hamburg: [53.5503, 9.9937, 2],
+        Hessen: [50.6521, 9.1624, 8],
+        "Mecklenburg-Vorpommern": [53.6127, 12.4296, 8.5],
+        Niedersachsen: [52.6367, 9.8451, 8],
+        "Nordrhein-Westfalen": [51.4333, 7.2667, 8.5],
+        "Rheinland-Pfalz": [49.9131, 7.4518, 8.5],
+        Saarland: [49.3964, 6.7562, 10],
+        Sachsen: [51.0493, 13.7384, 8.5],
+        "Sachsen-Anhalt": [51.9503, 11.6923, 8.5],
+        "Schleswig-Holstein": [54.2194, 9.6961, 8.5],
+        Thüringen: [50.8614, 11.0418, 9],
+      },
     };
   },
 
@@ -226,6 +244,15 @@ export default {
       });
     },
 
+    setViewToNetwork(networkCentralCoordinates) {
+      this.mapInstance.setView(
+        [networkCentralCoordinates[0], networkCentralCoordinates[1]],
+        networkCentralCoordinates[2],
+        {}
+      );
+      console.log("networkCentralCoordinates", networkCentralCoordinates);
+    },
+
     reAddCirclesToMap() {
       this.circles.forEach((circle) => {
         circle.removeFrom(this.mapInstance).addTo(this.mapInstance);
@@ -249,6 +276,19 @@ export default {
       }
     },
 
+    addGeoJsonDataToMap(geoJsonData) {
+      L.geoJSON(geoJsonData, {
+        style: function (feature) {
+          return {
+            color: "#333",
+            weight: 0,
+            fillColor: "blue",
+            fillOpacity: 0.2,
+          };
+        },
+      }).addTo(this.mapInstance);
+    },
+
     toggleMapOverlay() {
       let network = this.filterOptions.network;
 
@@ -263,6 +303,8 @@ export default {
           });
         }
         this.addGeoJsonDataToMap(geoJsonData);
+
+        this.setViewToNetwork(this.networkCentralCoordinates[network]);
         this.reAddCirclesToMap();
       } else if (this.germanyMapOverlay) {
         this.mapInstance.eachLayer((layer) => {
@@ -279,19 +321,6 @@ export default {
           }
         });
       }
-    },
-
-    addGeoJsonDataToMap(geoJsonData) {
-      L.geoJSON(geoJsonData, {
-        style: function (feature) {
-          return {
-            color: "#333",
-            weight: 0,
-            fillColor: "blue",
-            fillOpacity: 0.2,
-          };
-        },
-      }).addTo(this.mapInstance);
     },
 
     getColorBasedOnAirQualityIndex(airQualityIndex) {

@@ -1,9 +1,14 @@
 <template>
   <div class="lower-left-component">
-    <v-range-slider
-      track-color="transparent"
-      track-fill-color="gray"
-    ></v-range-slider>
+    <div class="box">
+      <v-range-slider
+        track-color="transparent"
+        track-fill-color="gray"
+      ></v-range-slider>
+    </div>
+    <button class="button bad">Bad</button>
+    <button class="button good">Good</button>
+    <button class="button all">ALL</button>
   </div>
 </template>
 
@@ -79,6 +84,21 @@ export default {
   border-radius: 0px;
   display: flex;
   align-items: center;
+}
+
+.box {
+  clip-path: polygon(
+    10px 0,
+    100% 0,
+    100% calc(100% - 10px),
+    calc(100% - 10px) 100%,
+    0 100%,
+    0 10px
+  );
+  margin: 10px;
+  width: calc(100% - 20px);
+  height: 30px;
+  background: linear-gradient(to left, rgb(255, 179, 0), green);
 }
 
 .button {
