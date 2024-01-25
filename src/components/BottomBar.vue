@@ -2,7 +2,6 @@
   <v-card min-width="800px" height="auto" color="rgb(31, 31, 31)">
     <v-container class="pa-2 custom-box">
       <v-row>
-        <!-- Erste Spalte: Slider und Chips -->
         <v-col cols="8" align-self="center">
           <v-container class="custom-container">
             <v-range-slider
@@ -46,7 +45,6 @@ export default {
     return {
       title: "Set Air Pollution Range",
       subtitle: "",
-      tab: null, //brauchen wir das?
 
       currentThumbsArray: [0, 4],
       selectedAirQualityIndexArray: [0, 1, 2, 3, 4],
@@ -75,14 +73,14 @@ export default {
 
   methods: {
     legendItems() {
-      return Object.keys(this.luftqualitaetsdaten).map(index => ({
+      return Object.keys(this.luftqualitaetsdaten).map((index) => ({
         text: this.luftqualitaetsdaten[index],
         color: this.getColorBasedOnIndex(index),
       }));
     },
     getColorBasedOnIndex(index) {
       const colors = ["green", "yellow", "orange", "red", "purple", "grey"];
-      return colors[index] || "grey"; // Default: "grey", falls der Index nicht übereinstimmt
+      return colors[index] || "grey";
     },
     getColorBasedOnValue(airQualityIndex) {
       return this.getColorBasedOnIndex(airQualityIndex);

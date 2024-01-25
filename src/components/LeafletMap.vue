@@ -125,7 +125,6 @@ export default {
 
   methods: {
     visualizeAirQualityIndex() {
-      // Removes the prior marker from the map if it exists.
       this.marker?.remove();
 
       if (this.filterOptions.station !== null) {
@@ -145,7 +144,6 @@ export default {
         }
       }
 
-      // Removes all circles from the map and empties the array of circles.
       this.circles.forEach((circle) => circle.remove());
       this.circles = [];
 
@@ -153,24 +151,19 @@ export default {
         return;
       }
 
-      // Filter stations based on the filterOptions prop
       const filteredStations = this.filterStations();
 
-      // Calculate the radius once before the loop
       const radius = 1000 / Math.pow(2, this.mapInstance.getZoom() - 10);
 
-      // Filter stations based on the selected air quality indices
       const newFilteredStations =
         this.filterAirQualityIndexStations(filteredStations);
 
       console.log("newFilteredStations", newFilteredStations);
 
-      // Iterates over each station in the array of filtered stations.
       newFilteredStations.forEach((station) => {
         const latitude = station[8];
         const longitude = station[7];
 
-        // Finds the air quality data for the station.
         const airQualityDataForStation = this.airQualityData.get(
           station[0]
         ) ?? [0, -1, 0];
@@ -178,11 +171,9 @@ export default {
         const airQualityIndex = airQualityDataForStation[1];
         const incompleteData = airQualityDataForStation[2] === 1;
 
-        // Determines the color of the circle based on the air quality index.
         const circleColor =
           this.getColorBasedOnAirQualityIndex(airQualityIndex);
 
-        // Draws a circle at the position of the station on the map.
         const circle = L.circle([latitude, longitude], {
           color: incompleteData ? "grey" : "rgb(0, 0, 128)",
           weight: 1,
@@ -192,7 +183,6 @@ export default {
           radius: radius,
         }).addTo(this.mapInstance);
 
-        // Stores a reference to the circle.
         this.circles.push(circle);
       });
     },
@@ -204,12 +194,6 @@ export default {
         {}
       );
       console.log("networkCentralCoordinates", networkCentralCoordinates);
-    },
-
-    reAddCirclesToMap() {
-      this.circles.forEach((circle) => {
-        circle.removeFrom(this.mapInstance).addTo(this.mapInstance);
-      });
     },
 
     reAddCirclesToMap() {
@@ -251,63 +235,21 @@ export default {
     toggleMapOverlay() {
       const network = this.filterOptions.network;
 
-      // Entfernen Sie alle Layer, die ein Feature haben
       this.mapInstance.eachLayer((layer) => {
         if (layer.feature) {
           layer.remove();
         }
       });
 
-      // Wenn ein Netzwerk ausgewählt ist, fügen Sie die GeoJson-Daten für dieses Netzwerk hinzu
       if (network) {
         const geoJsonData = this.getGeoJsonBordersForNetworks(network);
         this.addGeoJsonDataToMap(geoJsonData);
         this.setViewToNetwork(this.networkCentralCoordinates[network]);
-      }
-      // Wenn kein Netzwerk ausgewählt ist, aber die Deutschlandkarte Overlay aktiv ist, fügen Sie die deutschen Grenzen hinzu
-      else if (this.germanyMapOverlay) {
+      } else if (this.germanyMapOverlay) {
         this.addGeoJsonDataToMap(germanBorders);
       }
-
-      // Fügen Sie die Kreise zur Karte hinzu
       this.reAddCirclesToMap();
     },
-
-    // toggleMapOverlay() {
-    //   let network = this.filterOptions.network;
-
-    //   const geoJsonData = this.getGeoJsonBordersForNetworks(network);
-
-    //   if (network) {
-    //     if (this.germanyMapOverlay) {
-    //       this.mapInstance.eachLayer(layer => {
-    //         if (layer.feature) {
-    //           layer.remove();
-    //         }
-    //       });
-    //     }
-    //     this.addGeoJsonDataToMap(geoJsonData);
-
-    //     this.setViewToNetwork(this.networkCentralCoordinates[network]);
-    //     this.reAddCirclesToMap();
-    //   } else if (this.germanyMapOverlay) {
-    //     if (network) {
-    //       this.mapInstance.eachLayer(layer => {
-    //         if (layer.feature) {
-    //           layer.remove();
-    //         }
-    //       });
-    //     }
-    //     this.addGeoJsonDataToMap(germanBorders);
-    //     this.reAddCirclesToMap();
-    //   } else {
-    //     this.mapInstance.eachLayer(layer => {
-    //       if (layer.feature) {
-    //         layer.remove();
-    //       }
-    //     });
-    //   }
-    // },
 
     getColorBasedOnAirQualityIndex(airQualityIndex) {
       switch (airQualityIndex) {
@@ -346,7 +288,6 @@ export default {
         const latitude = station[8];
         const longitude = station[7];
 
-        // Finds the air quality data for the station.
         const airQualityDataForStation = this.airQualityData.get(
           station[0]
         ) ?? [0, -1, 0];
@@ -395,10 +336,9 @@ export default {
         }
       ).addTo(map);
 
-      // add eventListener for when the map is zoomed
       map.on("zoomend", this.adjustCircleSizes);
 
-      //adds a small delay that helps with smooth page reload
+      //Für smooth page reloads
       setTimeout(() => {
         map.invalidateSize();
       }, 100);
@@ -417,7 +357,6 @@ export default {
         },
       }).addTo(map);
 
-      //finally adds the map to the data function
       this.mapInstance = map;
     },
   },
