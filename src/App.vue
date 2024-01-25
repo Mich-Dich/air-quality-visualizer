@@ -7,6 +7,7 @@
         :airQualityData="airQualityData"
         :filterOptions="filterOptions"
         :germanyMapOverlay="germanyMapOverlay"
+        :selectedAirQualityIndicesArray="selectedAirQualityIndicesArray"
       />
       <DetailsDisplay
         v-if="airQualityData"
@@ -20,7 +21,9 @@
       />
       <BottomBar
         class="bottom-bar-position"
-        @selectedAirQualityIndicesArray=""
+        @selectedAirQualityIndicesArray="
+          handleSelectedAirQualityIndicesArrayChanged
+        "
       />
       <v-btn
         @click="this.germanyMapOverlay = !this.germanyMapOverlay"
@@ -55,6 +58,8 @@ export default {
         network: null,
       },
       germanyMapOverlay: true,
+
+      selectedAirQualityIndicesArray: [],
     };
   },
   methods: {
@@ -67,6 +72,16 @@ export default {
     handleFiltersChanged(filterOptions) {
       console.log("filter changed", filterOptions);
       this.filterOptions = filterOptions;
+    },
+
+    handleSelectedAirQualityIndicesArrayChanged(
+      selectedAirQualityIndicesArray
+    ) {
+      console.log(
+        "selectedAirQualityIndicesArray",
+        selectedAirQualityIndicesArray
+      );
+      this.selectedAirQualityIndicesArray = selectedAirQualityIndicesArray;
     },
   },
 };

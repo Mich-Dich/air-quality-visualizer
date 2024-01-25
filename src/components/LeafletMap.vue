@@ -23,9 +23,9 @@ export default {
     germanyMapOverlay: {
       type: Boolean,
     },
-    // selectedAirQualityIndicesArray: {
-    //   type: Array,
-    // },
+    selectedAirQualityIndicesArray: {
+      type: Array,
+    },
   },
 
   watch: {
@@ -47,6 +47,13 @@ export default {
     germanyMapOverlay: {
       handler() {
         this.toggleMapOverlay();
+      },
+      deep: true,
+    },
+
+    selectedAirQualityIndicesArray: {
+      handler() {
+        this.visualizeAirQualityIndex();
       },
       deep: true,
     },
@@ -114,7 +121,7 @@ export default {
 
       if (this.filterOptions.station !== null) {
         const station = this.stationsArray.find(
-          station => station[2] === this.filterOptions.station
+          (station) => station[2] === this.filterOptions.station
         );
 
         if (station) {
@@ -130,7 +137,7 @@ export default {
       }
 
       // Removes all circles from the map and empties the array of circles.
-      this.circles.forEach(circle => circle.remove());
+      this.circles.forEach((circle) => circle.remove());
       this.circles = [];
 
       if (!this.airQualityData) {
@@ -143,8 +150,13 @@ export default {
       // Calculate the radius once before the loop
       const radius = 1000 / Math.pow(2, this.mapInstance.getZoom() - 10);
 
+      const newFilteredStations =
+        this.filterAirQualityIndexStations(filteredStations);
+
+      console.log("newFilteredStations", newFilteredStations);
+
       // Iterates over each station in the array of filtered stations.
-      filteredStations.forEach(station => {
+      newFilteredStations.forEach((station) => {
         const latitude = station[8];
         const longitude = station[7];
 
@@ -174,6 +186,7 @@ export default {
         this.circles.push(circle);
       });
     },
+
     setViewToNetwork(networkCentralCoordinates) {
       this.mapInstance.setView(
         [networkCentralCoordinates[0], networkCentralCoordinates[1]],
@@ -184,13 +197,13 @@ export default {
     },
 
     reAddCirclesToMap() {
-      this.circles.forEach(circle => {
+      this.circles.forEach((circle) => {
         circle.removeFrom(this.mapInstance).addTo(this.mapInstance);
       });
     },
 
     reAddCirclesToMap() {
-      this.circles.forEach(circle => {
+      this.circles.forEach((circle) => {
         circle.removeFrom(this.mapInstance).addTo(this.mapInstance);
       });
     },
@@ -198,7 +211,7 @@ export default {
     //erstellt objekt mit alle Bundesländern als keys und den zugehörigen Koordinaten als values
     getGeoJsonBordersForNetworks(network) {
       const feature = germanBorders.features.find(
-        feature => feature.properties.GEN === network
+        (feature) => feature.properties.GEN === network
       );
 
       if (feature) {
@@ -229,7 +242,7 @@ export default {
       const network = this.filterOptions.network;
 
       // Entfernen Sie alle Layer, die ein Feature haben
-      this.mapInstance.eachLayer(layer => {
+      this.mapInstance.eachLayer((layer) => {
         if (layer.feature) {
           layer.remove();
         }
@@ -311,25 +324,42 @@ export default {
       let scaleFactor = Math.pow(2, currentZoom - initialZoom);
       let newRadius = 1000 / scaleFactor;
 
-      this.circles.forEach(circle => {
+      this.circles.forEach((circle) => {
         circle.setRadius(newRadius);
       });
+    },
+
+    filterAirQualityIndexStations(filteredStations) {
+      let newFilteredStations = [];
+
+      filteredStations.forEach((station) => {
+        const latitude = station[8];
+        const longitude = station[7];
+
+        // Finds the air quality data for the station.
+        const airQualityDataForStation = this.airQualityData.get(
+          station[0]
+        ) ?? [0, -1, 0];
+        const airQualityIndex = airQualityDataForStation[1];
+
+        if (this.selectedAirQualityIndicesArray.includes(airQualityIndex)) {
+          newFilteredStations.push(station);
+        }
+      });
+      console.log("newFilteredStations", newFilteredStations);
+      return newFilteredStations;
     },
 
     filterStations() {
       let filteredStations = this.stationsArray;
       let stationTypesArray = Array.from(this.filterOptions.stationTypes).map(
-        type => type.toString()
+        (type) => type.toString()
       );
       let stationSettings = Array.from(this.filterOptions.stationSettings).map(
-        setting => setting.toString()
+        (setting) => setting.toString()
       );
 
-      const airQualityIndex = Object.values(this.airQualityData)
-        .map(obj => Object.values(obj)[0])
-        .map(station => station[1]);
-
-      filteredStations = filteredStations.filter(station => {
+      filteredStations = filteredStations.filter((station) => {
         if (stationTypesArray.includes(station[11].toString()) == false) {
           return false;
         } else if (stationSettings.includes(station[10].toString()) == false) {
