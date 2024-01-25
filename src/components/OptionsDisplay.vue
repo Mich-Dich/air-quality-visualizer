@@ -443,7 +443,6 @@ export default {
       sendOptions.endDate = this.formatDate(sendOptions.endDate);
       sendOptions.endHour = this.formatHour(sendOptions.endHour);
 
-      console.log(sendOptions);
       let airQualityData = await UmweltbundesamtService.getAirquality(
         sendOptions.startDate,
         sendOptions.startDate,
@@ -451,11 +450,8 @@ export default {
         sendOptions.startHour
       );
 
-      console.log("return of getAirquality()", airQualityData);
-
       // unpacking airQualityData
       airQualityData = airQualityData.data.data;
-      console.log("extracted air quality data", airQualityData);
 
       airQualityData = Object.values(airQualityData).map(obj => {
         let key = Object.keys(airQualityData).find(
@@ -465,8 +461,6 @@ export default {
         values[0][0] = key;
         return values[0];
       });
-
-      console.log("fully extracted airQualityData", airQualityData);
 
       // emit the data to App.vue
       this.$emit("airQualityDataFetched", airQualityData);

@@ -347,9 +347,6 @@ export default {
       // Kreisgröße basierend auf der Zoomstufe anpassen
       let scaleFactor = Math.pow(2, currentZoom - initialZoom);
       let newRadius = 1000 / scaleFactor;
-      console.log("Zoomstufe:", currentZoom);
-      console.log("Skalierungsfaktor:", scaleFactor);
-      console.log("Neuer Radius:", newRadius);
 
       this.circles.forEach(circle => {
         circle.setRadius(newRadius);
@@ -368,8 +365,6 @@ export default {
       const airQualityIndex = Object.values(this.airQualityData)
         .map(obj => Object.values(obj)[0])
         .map(station => station[1]);
-
-      console.log("airQualityIndex", airQualityIndex);
 
       filteredStations = filteredStations.filter(station => {
         if (stationTypesArray.includes(station[11].toString()) == false) {

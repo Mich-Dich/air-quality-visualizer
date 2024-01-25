@@ -80,10 +80,6 @@ export default {
     },
   },
 
-  mounted() {
-    console.log(this.generalInfos.data[1].value);
-  },
-
   data() {
     return {
       show_details: false, // Change this condition based on your logic
