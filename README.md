@@ -1,16 +1,35 @@
-# air-quality-visualizer
+# Air Quality Visualizer
 
-Folgendes muss laut Aufgabenstellung in die README.md:
-‐ Name und Matrikelnummer aller Gruppenmitglieder
-‐ URL zu Ihrer Anwendung in der Cloud
-‐ Auflistung der verwendeten Hilfsmittel oder fremden Codebestandteile (nur falls vorhanden,
-siehe unten)
-‐ Beschreibung der notwendigen Schritte, um die Anwendung lokal zu starten. Bitte beachten
-Sie, dass das Standardverhalten nicht modifiziert werden sollte:  
-o npm install bzw.
-o npm run dev
+## Contributors
+- Fabian XX XXXX
+- Flo XX XXXX
+- Dominik Mally 36621
 
-Sources:
-Navbar:
-https://www.youtube.com/watch?v=pbU9JxMriOo
-https://www.youtube.com/watch?v=Qnj5CsUD0cs&t=12s
+## Application URL
+- XXX
+
+## Tools and Frameworks
+- Vuetify
+- Navbar Implementation: 
+  - [YouTube Tutorial 1](https://www.youtube.com/watch?v=pbU9JxMriOo)
+  - [YouTube Tutorial 2](https://www.youtube.com/watch?v=Qnj5CsUD0cs&t=12s)
+
+## Getting Started
+To run the Air Quality Visualizer application, follow these steps:
+
+1. Install dependencies:
+   ```
+   npm install
+   ```
+
+2. Start the server:
+   ```
+   npm run startServer
+   ```
+
+3. Open a new terminal and run the development server:
+   ```
+   npm run dev
+   ```
+
+Now, you should be able to access the application at the provided URL.

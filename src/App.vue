@@ -8,7 +8,11 @@
         :filterOptions="filterOptions"
         :germanyMapOverlay="germanyMapOverlay"
       />
-      <DetailsDisplay class="details-display-position" />
+      <DetailsDisplay
+        v-if="airQualityData"
+        class="details-display-position"
+        :airQualityData="airQualityData"
+      />
       <OptionsDisplay
         class="options-display-position"
         @airQualityDataFetched="handleAirQualityDataChanged"

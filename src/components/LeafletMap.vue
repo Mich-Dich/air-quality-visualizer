@@ -212,12 +212,11 @@ export default {
         // The color and fill color of the circle are based on the air quality index.
         // if (circleColor !== "grey") {
         const circle = L.circle([latitude, longitude], {
-          color: "black",
+          color: incompleteData ? "grey" : "rgb(0, 0, 128)",
           weight: 1,
           opacity: 1,
-          dashArray: incompleteData ? "4, 4" : "", // If the data is incomplete, the circle is dashed.
           fillColor: circleColor,
-          fillOpacity: 0.5,
+          fillOpacity: 1,
           radius: 1000 / Math.pow(2, this.mapInstance.getZoom() - 10),
         }).addTo(this.mapInstance);
 
