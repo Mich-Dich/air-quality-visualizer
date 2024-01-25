@@ -1,45 +1,9 @@
 <template>
   <v-card class="pa-3 clipping" width="auto" color="rgb(31, 31, 31)">
     <v-card-title>
-      {{ show_details ? station_infos.title : generalInfos.title }}
+      {{ generalInfos.title }}
     </v-card-title>
-    <!-- Displaying content based on the condition -->
-
-    <v-list v-if="show_details">
-      <v-list-item
-        v-for="(section, sectionIndex) in station_infos.data"
-        :key="sectionIndex"
-      >
-        <v-row>
-          <v-col
-            ><v-list-item-title style="font-size: 14px; font-weight: bold">{{
-              section.section_title
-            }}</v-list-item-title></v-col
-          >
-          <v-col><v-divider></v-divider></v-col>
-        </v-row>
-
-        <v-list density="compact">
-          <v-list-item
-            v-for="(info, infoIndex) in section.section_data"
-            :key="infoIndex"
-          >
-            <v-row>
-              <v-col
-                ><v-list-item-title>{{ info.name }}</v-list-item-title></v-col
-              >
-              <v-col
-                ><v-list-item-subtitle>{{
-                  info.value
-                }}</v-list-item-subtitle></v-col
-              >
-            </v-row>
-          </v-list-item>
-        </v-list>
-      </v-list-item>
-    </v-list>
-
-    <v-list v-else bg-color="rgb(31, 31, 31)">
+    <v-list bg-color="rgb(31, 31, 31)">
       <v-list-item v-for="(info, index) in generalInfos.data" :key="index">
         <v-row>
           <v-col cols="1" class="mr-2">
@@ -81,40 +45,7 @@ export default {
   },
 
   data() {
-    return {
-      show_details: false, // Change this condition based on your logic
-      station_infos: {
-        title: "Station XY-42 Stuttgart",
-        data: [
-          {
-            section_title: "Air quality info",
-            section_data: [
-              { name: "General quality", value: 42 },
-              { name: "NO2", value: 25 },
-              { name: "PM10", value: 10 },
-              { name: "CO", value: 5 },
-            ],
-          },
-          {
-            section_title: "Station infos",
-            section_data: [
-              {
-                name: "location",
-                value: "48° 46' 59.9'' N and 9° 10' 59.9'' E",
-              },
-              { name: "type of area", value: "urban" },
-            ],
-          },
-          {
-            section_title: "Scope Info",
-            section_data: [
-              { name: "measurement duration", value: "1h" },
-              { name: "type of area", value: "urban" },
-            ],
-          },
-        ],
-      },
-    };
+    return {};
   },
 
   computed: {
@@ -221,8 +152,6 @@ export default {
       };
     },
   },
-
-  methods: {},
 };
 </script>
 
