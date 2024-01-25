@@ -29,6 +29,7 @@
               :max-date="new Date()"
               prevent-min-max-navigation
               locale="de"
+              :clearable="false"
             ></VueDatePicker>
           </v-col>
 
@@ -42,6 +43,7 @@
               locale="de"
               :minutes-increment="0"
               no-minutes-overlay
+              :clearable="false"
             >
               <template #input-icon>
                 <img
