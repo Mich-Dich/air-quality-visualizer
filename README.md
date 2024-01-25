@@ -18,12 +18,12 @@
 
 - Vue 3 Options API
 - Vuetify
+- ChatGPT
+- Copilot
+- Vue Datepicker: https://vue3datepicker.com/
 - Navbar Implementation:
   - [YouTube Tutorial 1](https://www.youtube.com/watch?v=pbU9JxMriOo)
   - [YouTube Tutorial 2](https://www.youtube.com/watch?v=Qnj5CsUD0cs&t=12s)
-    -ChatGPT
-    -Copilot
-    -Vue Datepicker: https://vue3datepicker.com/
 
 ## Getting Started
 
