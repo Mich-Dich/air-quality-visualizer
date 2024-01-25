@@ -444,17 +444,32 @@ export default {
       sendOptions.endHour = this.formatHour(sendOptions.endHour);
 
       console.log(sendOptions);
-      const airqualityData = await UmweltbundesamtService.getAirquality(
+      let airQualityData = await UmweltbundesamtService.getAirquality(
         sendOptions.startDate,
         sendOptions.startDate,
         sendOptions.startHour,
         sendOptions.startHour
       );
 
-      console.log("return of getAirquality()", airqualityData);
+      console.log("return of getAirquality()", airQualityData);
+
+      // unpacking airQualityData
+      airQualityData = airQualityData.data.data;
+      console.log("extracted air quality data", airQualityData);
+
+      airQualityData = Object.values(airQualityData).map(obj => {
+        let key = Object.keys(airQualityData).find(
+          key => airQualityData[key] === obj
+        );
+        let values = Object.values(obj);
+        values[0][0] = key;
+        return values[0];
+      });
+
+      console.log("fully extracted airQualityData", airQualityData);
 
       // emit the data to App.vue
-      this.$emit("airQualityDataFetched", airqualityData);
+      this.$emit("airQualityDataFetched", airQualityData);
     },
   },
 };
