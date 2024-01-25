@@ -20,7 +20,7 @@
       />
       <BottomBar
         class="bottom-bar-position"
-        @selectedAirQualityIndicesArray="handleSelectedAirQualityIndices"
+        @selectedAirQualityIndicesArray=""
       />
       <v-btn
         @click="this.germanyMapOverlay = !this.germanyMapOverlay"
@@ -59,9 +59,6 @@ export default {
   },
   methods: {
     handleAirQualityDataChanged(airQualityData) {
-      airQualityData = airQualityData.data.data;
-      console.log("extracted air quality data", airQualityData);
-
       if (airQualityData) {
         this.airQualityData = airQualityData;
       }
@@ -71,8 +68,6 @@ export default {
       console.log("filter changed", filterOptions);
       this.filterOptions = filterOptions;
     },
-
-    handleSelectedAirQualityIndices(selectedAirQualityIndicesArray) {},
   },
 };
 </script>

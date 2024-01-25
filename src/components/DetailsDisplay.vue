@@ -140,57 +140,50 @@ export default {
           },
           {
             name: "Unvollständige Datensätze",
-            value: Object.values(this.airQualityData)
-              .map(obj => Object.values(obj)[0])
-              .filter(station => station[2] === 1).length,
+            value: this.airQualityData.filter(station => station[2] === 1)
+              .length,
             icon: "mdi-circle-outline",
             color: "blue",
           },
           {
             name: "Vollständige Datensätze",
-            value: Object.values(this.airQualityData)
-              .map(obj => Object.values(obj)[0])
-              .filter(station => station[2] === 0).length,
+            value: this.airQualityData.filter(station => station[2] === 0)
+              .length,
             icon: "mdi-circle-outline",
             color: "grey",
           },
           {
             name: "Sehr gut",
-            value: Object.values(this.airQualityData)
-              .map(obj => Object.values(obj)[0])
-              .filter(station => station[1] === 0).length,
+            value: this.airQualityData.filter(station => station[1] === 0)
+              .length,
             icon: "mdi-circle",
             color: "green",
           },
           {
             name: "Gut",
-            value: Object.values(this.airQualityData)
-              .map(obj => Object.values(obj)[0])
-              .filter(station => station[1] === 1).length,
+            value: this.airQualityData.filter(station => station[1] === 1)
+              .length,
             icon: "mdi-circle",
             color: "yellow",
           },
           {
             name: "Mäßig",
-            value: Object.values(this.airQualityData)
-              .map(obj => Object.values(obj)[0])
-              .filter(station => station[1] === 2).length,
+            value: this.airQualityData.filter(station => station[1] === 2)
+              .length,
             icon: "mdi-circle",
             color: "orange",
           },
           {
             name: "Schlecht",
-            value: Object.values(this.airQualityData)
-              .map(obj => Object.values(obj)[0])
-              .filter(station => station[1] === 3).length,
+            value: this.airQualityData.filter(station => station[1] === 3)
+              .length,
             icon: "mdi-circle",
             color: "red",
           },
           {
             name: "Sehr schlecht",
-            value: Object.values(this.airQualityData)
-              .map(obj => Object.values(obj)[0])
-              .filter(station => station[1] === 4).length,
+            value: this.airQualityData.filter(station => station[1] === 4)
+              .length,
             icon: "mdi-circle",
             color: "purple",
           },
@@ -198,7 +191,7 @@ export default {
             name: "Keine Daten",
             value:
               UmweltbundesamtService.stations.length -
-              Object.keys(this.airQualityData).length,
+              this.airQualityData.length,
             icon: "mdi-circle",
             color: "grey",
           },
