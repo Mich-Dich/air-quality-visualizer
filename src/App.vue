@@ -8,7 +8,7 @@
         :filterOptions="filterOptions"
         :germanyMapOverlay="germanyMapOverlay"
         :selectedAirQualityIndicesArray="selectedAirQualityIndicesArray"
-        :isEmptyDataMarker="isEmptyDataMarker"
+        :isEmptyDataCircle="isEmptyDataCircle"
       />
       <DetailsDisplay
         v-if="airQualityData"
@@ -63,7 +63,7 @@ export default {
 
       selectedAirQualityIndicesArray: [],
 
-      isEmptyDataMarker: null,
+      isEmptyDataCircle: null,
     };
   },
   methods: {
@@ -88,9 +88,9 @@ export default {
       this.selectedAirQualityIndicesArray = selectedAirQualityIndicesArray;
     },
 
-    handleEmptyDataMarkerChanged(isEmptyDataMarker) {
-      console.log("isEmptyDataMarker", isEmptyDataMarker);
-      this.isEmptyDataMarker = isEmptyDataMarker;
+    handleEmptyDataMarkerChanged(isEmptyDataCircle) {
+      console.log("isEmptyDataCircle", isEmptyDataCircle);
+      this.isEmptyDataCircle = isEmptyDataCircle;
     },
   },
 };

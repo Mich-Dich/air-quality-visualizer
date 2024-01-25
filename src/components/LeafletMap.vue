@@ -25,7 +25,7 @@ export default {
     selectedAirQualityIndicesArray: {
       type: Array,
     },
-    isEmptyDataMarker: {
+    isEmptyDataCircle: {
       type: Boolean,
     },
   },
@@ -60,7 +60,7 @@ export default {
       deep: true,
     },
 
-    isEmptyDataMarker: {
+    isEmptyDataCircle: {
       handler() {
         this.visualizeAirQualityIndex();
       },
@@ -202,7 +202,6 @@ export default {
       });
     },
 
-    //erstellt objekt mit alle Bundesländern als keys und den zugehörigen Koordinaten als values
     getGeoJsonBordersForNetworks(network) {
       const feature = germanBorders.features.find(
         (feature) => feature.properties.GEN === network
@@ -295,7 +294,7 @@ export default {
 
         if (
           this.selectedAirQualityIndicesArray.includes(airQualityIndex) ||
-          (this.isEmptyDataMarker && airQualityIndex === -1)
+          (this.isEmptyDataCircle && airQualityIndex === -1)
         ) {
           newFilteredStations.push(station);
         }
