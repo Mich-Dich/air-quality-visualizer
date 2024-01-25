@@ -26,6 +26,9 @@ export default {
     selectedAirQualityIndicesArray: {
       type: Array,
     },
+    isEmptyDataMarker: {
+      type: Boolean,
+    },
   },
 
   watch: {
@@ -52,6 +55,13 @@ export default {
     },
 
     selectedAirQualityIndicesArray: {
+      handler() {
+        this.visualizeAirQualityIndex();
+      },
+      deep: true,
+    },
+
+    isEmptyDataMarker: {
       handler() {
         this.visualizeAirQualityIndex();
       },
@@ -150,6 +160,7 @@ export default {
       // Calculate the radius once before the loop
       const radius = 1000 / Math.pow(2, this.mapInstance.getZoom() - 10);
 
+      // Filter stations based on the selected air quality indices
       const newFilteredStations =
         this.filterAirQualityIndexStations(filteredStations);
 
@@ -342,11 +353,13 @@ export default {
         ) ?? [0, -1, 0];
         const airQualityIndex = airQualityDataForStation[1];
 
-        if (this.selectedAirQualityIndicesArray.includes(airQualityIndex)) {
+        if (
+          this.selectedAirQualityIndicesArray.includes(airQualityIndex) ||
+          (this.isEmptyDataMarker && airQualityIndex === -1)
+        ) {
           newFilteredStations.push(station);
         }
       });
-      console.log("newFilteredStations", newFilteredStations);
       return newFilteredStations;
     },
 

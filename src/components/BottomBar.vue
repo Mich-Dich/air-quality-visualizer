@@ -1,27 +1,46 @@
 <template>
   <v-card min-width="40vw" height="auto" color="rgb(31, 31, 31)">
     <v-container class="pa-2 custom-box">
-      <v-container class="custom-container"
-        ><v-range-slider
-          track-color="transparent"
-          track-fill-color="gray"
-          v-model="currentThumbsArray"
-          min="0"
-          max="4"
-          :step="1"
-          :strict="true"
-          @end="handleThumbsArrayChange"
-        ></v-range-slider>
-      </v-container>
-      <v-row justify="space-between">
-        <v-col
-          class="ma-2 pa-0 pt-2 custom-button d-flex justify-center align-center"
-          v-for="item in legendItems()"
-          :key="item.text"
-        >
-          <v-chip width="13ch" variant="text" :color="item.color">{{
-            item.text
-          }}</v-chip>
+      <v-row>
+        <!-- Erste Spalte: Slider und Chips -->
+        <v-col cols="8">
+          <v-container class="custom-container">
+            <v-range-slider
+              track-color="transparent"
+              track-fill-color="gray"
+              v-model="currentThumbsArray"
+              min="0"
+              max="4"
+              :step="1"
+              :strict="true"
+              @end="handleThumbsArrayChange"
+            ></v-range-slider>
+
+            <v-row justify="space-between">
+              <v-col
+                class="ma-2 pa-0 pt-2 custom-button d-flex justify-center align-center"
+                v-for="item in legendItems"
+                :key="item.text"
+              >
+                <v-chip width="13ch" variant="text" :color="item.color">{{
+                  item.text
+                }}</v-chip>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-col>
+
+        <v-col cols="4" class="ma-0">
+          <v-btn
+            large
+            @click="this.isEmptyDataMarker = !this.isEmptyDataMarker"
+            color="primary"
+            variant="elevated"
+            ><span min-width="20px" v-if="isEmptyDataMarker"
+              >Leere Daten ausblenden</span
+            >
+            <span min-width="20px" v-else>Leere Daten einblenden</span></v-btn
+          >
         </v-col>
       </v-row>
     </v-container>
@@ -33,7 +52,7 @@ export default {
   // The component's name:
   name: "BottomBar",
 
-  emits: ["selectedAirQualityIndicesArray"],
+  emits: ["selectedAirQualityIndicesArray", "isEmptyDataMarker"],
 
   data() {
     return {
@@ -51,6 +70,8 @@ export default {
         3: "Schlecht",
         4: "Sehr schlecht",
       },
+
+      isEmptyDataMarker: null,
     };
   },
 
@@ -58,9 +79,15 @@ export default {
     this.handleThumbsArrayChange();
   },
 
+  watch: {
+    isEmptyDataMarker() {
+      this.$emit("isEmptyDataMarker", this.isEmptyDataMarker);
+    },
+  },
+
   methods: {
     legendItems() {
-      return Object.keys(this.luftqualitaetsdaten).map(index => ({
+      return Object.keys(this.luftqualitaetsdaten).map((index) => ({
         text: this.luftqualitaetsdaten[index],
         color: this.getColorBasedOnIndex(index),
       }));
