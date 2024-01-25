@@ -226,6 +226,12 @@ export default {
       });
     },
 
+    reAddCirclesToMap() {
+      this.circles.forEach((circle) => {
+        circle.removeFrom(this.mapInstance).addTo(this.mapInstance);
+      });
+    },
+
     //erstellt objekt mit alle Bundesländern als keys und den zugehörigen Koordinaten als values
     getGeoJsonBordersForNetworks(network) {
       const feature = germanBorders.features.find(
@@ -257,6 +263,7 @@ export default {
           });
         }
         this.addGeoJsonDataToMap(geoJsonData);
+        this.reAddCirclesToMap();
       } else if (this.germanyMapOverlay) {
         this.mapInstance.eachLayer((layer) => {
           if (layer.feature) {
@@ -264,6 +271,7 @@ export default {
           }
         });
         this.addGeoJsonDataToMap(germanBorders);
+        this.reAddCirclesToMap();
       } else {
         this.mapInstance.eachLayer((layer) => {
           if (layer.feature) {

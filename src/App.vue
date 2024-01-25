@@ -28,6 +28,7 @@
         variant="elevated"
         color="primary"
         size="large"
+        :disabled="filterOptions.network"
       >
         <v-icon>mdi mdi-map-outline</v-icon>
         <span v-if="germanyMapOverlay">Deutschland Overlay ausblenden</span>
@@ -50,7 +51,9 @@ export default {
   data() {
     return {
       airQualityData: null,
-      filterOptions: null,
+      filterOptions: {
+        network: null,
+      },
       germanyMapOverlay: true,
     };
   },
