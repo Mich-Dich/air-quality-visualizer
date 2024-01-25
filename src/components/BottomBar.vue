@@ -5,11 +5,12 @@
         ><v-range-slider
           track-color="transparent"
           track-fill-color="gray"
-          v-model:model-value="currentThumbsArray"
+          v-model="currentThumbsArray"
           min="0"
           max="4"
           :step="1"
           :strict="true"
+          @end="handleThumbsArrayChange"
         ></v-range-slider>
       </v-container>
       <v-row justify="space-between">
@@ -41,7 +42,7 @@ export default {
       tab: null, //brauchen wir das?
 
       currentThumbsArray: [0, 4],
-      selectedAirQualityIndexArray: null,
+      selectedAirQualityIndexArray: [0, 1, 2, 3, 4],
 
       luftqualitaetsdaten: {
         0: "Sehr gut",
@@ -53,15 +54,13 @@ export default {
     };
   },
 
-  watch: {
-    currentThumbsArray: function (newValues, oldValues) {
-      this.handleThumbsArrayChange();
-    },
+  mounted() {
+    this.handleThumbsArrayChange();
   },
 
   methods: {
     legendItems() {
-      return Object.keys(this.luftqualitaetsdaten).map((index) => ({
+      return Object.keys(this.luftqualitaetsdaten).map(index => ({
         text: this.luftqualitaetsdaten[index],
         color: this.getColorBasedOnIndex(index),
       }));
