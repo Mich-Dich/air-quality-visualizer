@@ -258,13 +258,11 @@ export default {
         }
         this.addGeoJsonDataToMap(geoJsonData);
       } else if (this.germanyMapOverlay) {
-        if (network) {
-          this.mapInstance.eachLayer((layer) => {
-            if (layer.feature) {
-              layer.remove();
-            }
-          });
-        }
+        this.mapInstance.eachLayer((layer) => {
+          if (layer.feature) {
+            layer.remove();
+          }
+        });
         this.addGeoJsonDataToMap(germanBorders);
       } else {
         this.mapInstance.eachLayer((layer) => {
