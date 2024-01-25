@@ -111,52 +111,6 @@ export default {
   },
 
   methods: {
-    handleMapMoved() {
-      // this.getCurrentMapBounds();
-      // this.updateMarkers();
-      // this.logInfo();
-    },
-
-    addAllMarkers() {
-      this.stationsArray.forEach(station => {
-        const marker = L.marker([
-          parseFloat(station[8]),
-          parseFloat(station[7]),
-        ])
-          .addTo(this.mapInstance)
-          .bindPopup(station[2]);
-      });
-    },
-
-    updateMarkers() {
-      // Durchläuft jedes Element im stationsArray.
-      this.stationsArray.forEach(station => {
-        // Konvertiert die Breiten- und Längengrade der Station in Fließkommazahlen.
-        const lat = parseFloat(station[8]);
-        const lng = parseFloat(station[7]);
-
-        // Überprüft, ob der Marker innerhalb der aktuellen Kartenbegrenzungen liegt.
-        const markerInBounds =
-          lat <= this.currentMapBounds.A.lat &&
-          lat >= this.currentMapBounds.D.lat &&
-          lng <= this.currentMapBounds.B.lng &&
-          lng >= this.currentMapBounds.A.lng;
-
-        // Versucht, einen vorhandenen Marker an den gegebenen Koordinaten in der markerMap zu finden.
-        const existingMarker = this.markerMap.get(`${lat},${lng}`);
-
-        // Wenn der Marker innerhalb der Begrenzungen liegt und noch nicht existiert, wird ein neuer Marker erstellt und zur markerMap hinzugefügt.
-        if (markerInBounds && !existingMarker) {
-          const newMarker = this.createMarker(station);
-          this.markerMap.set(`${lat},${lng}`, newMarker);
-        }
-        // Wenn der Marker außerhalb der Begrenzungen liegt und bereits existiert, wird er entfernt.
-        else if (!markerInBounds && existingMarker) {
-          this.removeMarker(existingMarker);
-        }
-      });
-    },
-
     visualizeAirQualityIndex() {
       // Removes the prior marker from the map if it exists.
       if (this.marker) {
@@ -240,15 +194,6 @@ export default {
       this.circles.forEach(circle => {
         circle.removeFrom(this.mapInstance).addTo(this.mapInstance);
       });
-    },
-
-    setViewToNetwork(networkCentralCoordinates) {
-      this.mapInstance.setView(
-        [networkCentralCoordinates[0], networkCentralCoordinates[1]],
-        networkCentralCoordinates[2],
-        {}
-      );
-      console.log("networkCentralCoordinates", networkCentralCoordinates);
     },
 
     reAddCirclesToMap() {
@@ -379,86 +324,6 @@ export default {
       return filteredStations;
     },
 
-    logInfo() {
-      // Loggt die aktuellen Kartenbegrenzungen.
-      // console.table(this.currentMapBounds);
-      // Loggt die gefilterten Städte.
-      // console.table(this.filteredCities);
-      // Loggt die Kartenoptionen.
-      // console.table(this.mapOptions);
-      // Loggt die GeoJSON-Daten.
-      // console.table(this.geojsonData);
-      // Loggt die Stationsdaten.
-      // console.table(this.stationsArray.map(station => station[2]));
-      // Loggt die Filteroptionen.
-      // console.table(this.filterOptions);
-      // Loggt die MarkerMap.
-      // console.table(Array.from(this.markerMap.entries()));
-    },
-
-    addMarkersToCities(citiesArray) {
-      citiesArray.forEach(city => {
-        const marker = L.marker([city.Breitengrad, city.Längengrad])
-          .addTo(this.mapInstance)
-          .bindPopup(city.Ort);
-      });
-    },
-
-    removeMarker(markerToRemove) {
-      if (markerToRemove) {
-        markerToRemove.remove();
-        const lat = markerToRemove.getLatLng().lat;
-        const lng = markerToRemove.getLatLng().lng;
-        this.markerMap.delete(`${lat},${lng}`);
-      }
-    },
-
-    getCurrentMapBounds() {
-      //calculate and set the four corner points of the viewable map
-      const bounds = this.mapInstance.getBounds();
-      this.currentMapBounds = this.getMapCornerPoints(bounds);
-    },
-
-    getFilteredCities({ onlyInView, onlyOneDistrictPerCity }) {
-      let filteredCities = cities;
-
-      //filters out cities that are not in the viewable window
-      if (onlyInView) {
-        filteredCities = filteredCities.filter(city => {
-          return (
-            city.Breitengrad <= this.currentMapBounds.A.lat &&
-            city.Breitengrad >= this.currentMapBounds.D.lat &&
-            city.Längengrad <= this.currentMapBounds.B.lng &&
-            city.Längengrad >= this.currentMapBounds.A.lng
-          );
-        });
-      }
-
-      // filters out duplicate cities with different postal codes
-      if (onlyOneDistrictPerCity) {
-        const uniqueCities = {};
-        filteredCities = filteredCities.filter(city => {
-          if (!uniqueCities[city.Ort]) {
-            uniqueCities[city.Ort] = true;
-            return true;
-          }
-          return false;
-        });
-      }
-
-      this.filteredCities = filteredCities;
-    },
-
-    getMapCornerPoints(bounds) {
-      //constructs the currentMapBounds object by returning its points
-      return {
-        A: { lat: bounds._northEast.lat, lng: bounds._southWest.lng },
-        B: { lat: bounds._northEast.lat, lng: bounds._northEast.lng },
-        C: { lat: bounds._southWest.lat, lng: bounds._northEast.lng },
-        D: { lat: bounds._southWest.lat, lng: bounds._southWest.lng },
-      };
-    },
-
     initMap() {
       //initializes the Leaflet map and loads open street map as its tile layer
       const map = L.map(this.mapId, this.mapOptions);
@@ -469,9 +334,6 @@ export default {
             '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         }
       ).addTo(map);
-
-      // add eventListener for when the map is moved
-      map.addEventListener("moveend", this.handleMapMoved);
 
       // add eventListener for when the map is zoomed
       map.on("zoomend", this.adjustCircleSizes);
