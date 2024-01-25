@@ -109,10 +109,6 @@
             </v-chip>
           </v-chip-group>
         </v-container>
-
-        <v-btn color="primary" variant="elevated" @click="validateAndSentData"
-          >Luftdaten abrufen</v-btn
-        >
       </v-window-item>
 
       <!-- Ansicht Stationen -->
@@ -313,6 +309,11 @@ export default {
       },
       deep: true,
     },
+
+    apiQueryOptions: {
+      handler: "validateAndSentData",
+      deep: true,
+    },
   },
 
   async mounted() {
@@ -321,6 +322,7 @@ export default {
     this.getMembersFromUBA();
     this.extractInputValues();
     this.setChipGroupValues();
+    this.validateAndSentData();
   },
 
   data() {
