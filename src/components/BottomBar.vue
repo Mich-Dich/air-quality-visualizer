@@ -133,7 +133,7 @@ export default {
   padding: 0px;
   padding-left: 10px;
   padding-right: 10px;
-  width: calc(100% -20px);
+  width: calc(100% 20px);
   height: 30px;
   background: linear-gradient(
     to right,
