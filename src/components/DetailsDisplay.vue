@@ -3,7 +3,7 @@
     <v-card-title>
       {{ generalInfos.title }}
     </v-card-title>
-    <v-list bg-color="rgb(31, 31, 31)">
+    <v-list bg-color="rgb(31, 31, 31)" >
       <v-list-item v-for="(info, index) in generalInfos.data" :key="index">
         <v-row>
           <v-col cols="1" class="mr-2">

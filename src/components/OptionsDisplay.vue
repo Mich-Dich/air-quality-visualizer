@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="pa-3"
+    class="pa-3 clipping"
     :title="title"
     :subtitle="subtitle"
     max-width="550px"
@@ -378,23 +378,17 @@ export default {
       this.stationTypes = UmweltbundesamtService.stationsTypes;
       this.transgressionTypes = UmweltbundesamtService.transgressionTypes;
     },
+
     extractInputValues() {
       this.componentNames = this.components.map((component) => component[4]);
       this.scopeNames = this.scopes.map((scope) => scope[5]);
       this.stationNames = this.stations.map((station) => station[2]);
-      this.networkNames = this.networks
-        .map((network) => network[2])
-        .filter((network) => network !== "UBA");
-      this.stationSettingNames = this.stationSettings.map(
-        (stationSetting) => stationSetting[1]
-      );
-      this.stationTypeNames = this.stationTypes.map(
-        (stationType) => stationType[1]
-      );
-      this.transgressionNames = this.transgressionTypes.map(
-        (transgression) => transgression[1]
-      );
+      this.networkNames = this.networks.map((network) => network[2]).filter((network) => network !== "UBA");
+      this.stationSettingNames = this.stationSettings.map((stationSetting) => stationSetting[1]);
+      this.stationTypeNames = this.stationTypes.map((stationType) => stationType[1]);
+      this.transgressionNames = this.transgressionTypes.map((transgression) => transgression[1]);
     },
+
     setChipGroupValues() {
       // initialize all chip groups with all been selected
       this.filterOptions.stationSettings = this.stationSettingNames.map(
@@ -478,5 +472,15 @@ export default {
   width: auto;
   margin-left: 5px;
   margin-top: 5px;
+}
+.clipping {
+  clip-path: polygon(
+    15px 0,
+    100% 0,
+    100% calc(100% - 15px),
+    calc(100% - 15px) 100%,
+    0 100%,
+    0 15px
+  );
 }
 </style>

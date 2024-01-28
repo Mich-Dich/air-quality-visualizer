@@ -13,7 +13,7 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn>
-        <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+        <a href="https://github.com/FabianCode03/air-quality-visualizer" target="_blank" rel="noopener noreferrer">
           <span class="font-weight-bold">Github</span>
           <v-icon right>mdi mdi-github</v-icon>
         </a>

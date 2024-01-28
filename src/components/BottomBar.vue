@@ -1,5 +1,5 @@
 <template>
-  <v-card min-width="800px" height="auto" color="rgb(31, 31, 31)">
+  <v-card min-width="800px" height="auto" color="rgb(31, 31, 31)" class="clipping">
     <v-container class="pa-2 custom-box">
       <v-row>
         <v-col cols="8" align-self="center">
@@ -19,6 +19,7 @@
 
         <v-col cols="4" class="ma-0 text-end">
           <v-btn
+            class="clipping"
             large
             @click="this.isEmptyDataMarker = !this.isEmptyDataMarker"
             color="primary"
@@ -133,5 +134,15 @@ export default {
 
 .custom-box {
   position: relative;
+}
+.clipping {
+  clip-path: polygon(
+    15px 0,
+    100% 0,
+    100% calc(100% - 15px),
+    calc(100% - 15px) 100%,
+    0 100%,
+    0 15px
+  );
 }
 </style>

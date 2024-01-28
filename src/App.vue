@@ -29,7 +29,7 @@
       />
       <v-btn
         @click="this.germanyMapOverlay = !this.germanyMapOverlay"
-        class="toggle-borders-button"
+        class="toggle-borders-button clipping"
         variant="elevated"
         color="primary"
         size="large"
@@ -127,5 +127,15 @@ export default {
   bottom: 20px;
   right: 20px;
   z-index: 1000;
+}
+.clipping {
+  clip-path: polygon(
+    15px 0,
+    100% 0,
+    100% calc(100% - 15px),
+    calc(100% - 15px) 100%,
+    0 100%,
+    0 15px
+  );
 }
 </style>
